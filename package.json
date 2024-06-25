@@ -1,17 +1,36 @@
 {
-  "name": "mmmines",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "deploy": "wrangler deploy --minify src/index.ts"
-  },
-  "dependencies": {
-    "hono": "^4.4.8"
-  },
-  "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240529.0",
-    "@hono/vite-dev-server": "^0.12.2",
-    "vite": "^5.3.1",
-    "wrangler": "^3.57.2"
-  }
+	"name": "mmmines",
+	"type": "module",
+	"scripts": {
+		"dev": "vite",
+		"deploy": "wrangler deploy --minify src/index.ts",
+		"format": "prettier --cache --write .",
+		"prepare": "husky"
+	},
+	"dependencies": {
+		"hono": "^4.4.8"
+	},
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20240529.0",
+		"@hono/vite-dev-server": "^0.12.2",
+		"husky": "^9.0.11",
+		"lint-staged": "^15.2.7",
+		"prettier": "^3.3.2",
+		"vite": "^5.3.1",
+		"wrangler": "^3.57.2"
+	},
+	"lint-staged": {
+		"*": "prettier --cache --ignore-unknown --write"
+	},
+	"prettier": {
+		"arrowParens": "always",
+		"bracketSameLine": true,
+		"bracketSpacing": true,
+		"endOfLine": "lf",
+		"jsxSingleQuote": false,
+		"semi": true,
+		"singleQuote": false,
+		"trailingComma": "all",
+		"useTabs": true
+	}
 }

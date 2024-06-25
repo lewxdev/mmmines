@@ -26,14 +26,8 @@ app.get("/", (c) => {
 });
 
 app.get("/board", async (c) => {
-	const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = env<Env>(
-		c,
-		"workerd",
-	);
-	const redis = Redis.fromEnv({
-		UPSTASH_REDIS_REST_URL,
-		UPSTASH_REDIS_REST_TOKEN,
-	});
+	const vars = env<Env>(c);
+	const redis = Redis.fromEnv(vars);
 	await redis.set("board", "foo bar");
 	const board = await redis.get("board");
 	return c.text(board as string);

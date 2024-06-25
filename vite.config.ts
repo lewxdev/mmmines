@@ -6,7 +6,7 @@ export default defineConfig({
 	plugins: [
 		devServer({
 			adapter: cloudflareAdapter,
-			entry: "src/index.ts",
+			entry: "src/index.tsx",
 		}),
 	],
 });

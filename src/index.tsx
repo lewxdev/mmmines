@@ -26,7 +26,7 @@ app.get("/", (c) => {
 });
 
 app.get("/board", async (c) => {
-	const vars = env<Env>(c);
+	const vars = env<Env>(c, "workerd");
 	const redis = Redis.fromEnv(vars);
 	await redis.set("board", "foo bar");
 	const board = await redis.get("board");

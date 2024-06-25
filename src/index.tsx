@@ -14,7 +14,7 @@ app.get("/", (c) => {
 		<html>
 			<head>
 				<title>mmmines</title>
-				<link rel="stylesheet" href="/src/index.css" />
+				<script crossOrigin src="https://cdn.twind.style"></script>
 			</head>
 			<body>
 				<p className="text-gray-900 underline dark:text-gray-100">

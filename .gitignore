@@ -46,3 +46,6 @@ pids
 .temp
 .DS_Store
 *.tgz
+
+# cloudflare
+wrangler.toml

@@ -8,8 +8,8 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
-		"@upstash/redis": "^1.31.6",
-		"hono": "^4.4.8"
+		"hono": "^4.4.8",
+		"ioredis": "^5.4.1"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240529.0",

@@ -1,36 +1,51 @@
-# prod
-dist/
+# based on the node gitignore file from github/gitignore
+# see: https://github.com/github/gitignore/blob/main/Node.gitignore
+# learn more: https://git-scm.com/docs/gitignore
 
-# dev
-.yarn/
-!.yarn/releases
-.vscode/*
-!.vscode/launch.json
-!.vscode/*.code-snippets
-.idea/workspace.xml
-.idea/usage.statistics.xml
-.idea/shelf
+# build
+dist
 
-# deps
-node_modules/
+# caches
+.cache
+.eslintcache
+.node_repl_history
+.npm
 .wrangler
+*.tsbuildinfo
 
-# env
+# dependencies
+node_modules
+
+# environment
 .env
-.env.production
+.env.*.local
+.env.local
 .dev.vars
 
 # logs
-logs/
+logs
 *.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
+*-debug.log*
+*-error.log*
 
-# misc
+# addons
+# see: https://nodejs.org/api/addons.html
+build/Release
+
+# reports
+# see: https://nodejs.org/api/report.html
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# runtime
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# miscellaneous
+.temp
 .DS_Store
+*.tgz
 
 # cloudflare
 wrangler.toml

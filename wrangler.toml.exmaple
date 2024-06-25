@@ -1,6 +1,6 @@
 name = "mmmines"
 compatibility_date = "2023-08-23"
-main = "src/index.ts"
+main = "src/index.tsx"
 minify = true
 
 [vars]

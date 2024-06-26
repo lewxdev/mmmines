@@ -1,6 +1,7 @@
 import { Redis } from "@upstash/redis/cloudflare";
 import { Hono } from "hono";
 import { env } from "hono/adapter";
+import { renderer } from "./renderer";
 
 import App from "./app";
 
@@ -11,8 +12,10 @@ type Env = {
 
 const app = new Hono();
 
+app.get("*", renderer);
+
 app.get("/", (c) => {
-	return c.html(<App />);
+	return c.render(<App />);
 });
 
 app.get("/board", async (c) => {

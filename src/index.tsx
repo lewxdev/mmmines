@@ -2,6 +2,8 @@ import { Redis } from "@upstash/redis/cloudflare";
 import { Hono } from "hono";
 import { env } from "hono/adapter";
 
+import App from "./app";
+
 type Env = {
 	UPSTASH_REDIS_REST_URL: string;
 	UPSTASH_REDIS_REST_TOKEN: string;
@@ -10,19 +12,7 @@ type Env = {
 const app = new Hono();
 
 app.get("/", (c) => {
-	return c.html(
-		<html>
-			<head>
-				<title>mmmines</title>
-				<script crossOrigin src="https://cdn.twind.style"></script>
-			</head>
-			<body>
-				<p className="text-gray-900 underline dark:text-gray-100">
-					Hello Cloudflare Workers!
-				</p>
-			</body>
-		</html>,
-	);
+	return c.html(<App />);
 });
 
 app.get("/board", async (c) => {

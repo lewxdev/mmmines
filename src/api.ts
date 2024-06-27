@@ -11,7 +11,7 @@ api.get("/board", async (c) => {
 api.get("/board/:offset", async (c) => {
 	const offset = c.req.param("offset");
 	const redis = c.get("redis");
-	const board = await redis.bitfield("board", "GET", "u8", offset);
+	const value = await redis.bitfield("board", "GET", "u8", offset);
 
-	return c.json({ board });
+	return c.json({ value });
 });

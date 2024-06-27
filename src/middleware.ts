@@ -3,15 +3,13 @@ import { createMiddleware } from "hono/factory";
 import Redis from "ioredis";
 
 type Env = {
-	UPSTASH_REDIS_REST_TOKEN: string;
+	UPSTASH_REDIS_URI: string;
 };
 
 export const redis = () =>
 	createMiddleware(async (c, next) => {
-		const { UPSTASH_REDIS_REST_TOKEN } = env<Env>(c, "workerd");
-		const redis = new Redis(
-			`rediss://default:${UPSTASH_REDIS_REST_TOKEN}@allowing-muskox-49551.upstash.io:6379`,
-		);
+		const { UPSTASH_REDIS_URI } = env<Env>(c, "workerd");
+		const redis = new Redis(UPSTASH_REDIS_URI);
 
 		c.set("redis", redis);
 

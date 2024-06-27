@@ -2,12 +2,12 @@
 	"name": "mmmines",
 	"type": "module",
 	"scripts": {
-		"dev": "vite",
+		"dev": "bun --bun vite",
+		"build": "bun dev build --mode client && bun dev build",
 		"deploy": "bun run build && wrangler pages deploy",
-		"build": "vite build --mode client && vite build",
+		"preview": "bun run build && wrangler pages dev",
 		"format": "prettier --cache --write .",
-		"prepare": "husky",
-		"preview": "wrangler pages dev"
+		"prepare": "husky"
 	},
 	"dependencies": {
 		"@upstash/redis": "^1.31.6",

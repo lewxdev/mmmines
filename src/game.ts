@@ -1,47 +1,47 @@
 import _ from "lodash";
 
-type PositionKey = typeof offsetMap extends Map<infer K, any> ? K : never;
+export class Field {
+	protected readonly data: number[];
+	public static isMine = (value: number) => value % 10 === 9;
+	public static isFlagged = (value: number) => _.inRange(value, 10, 20);
+	public static isExposed = (value: number) => value >= 20;
 
-// temporarily hardcoded
-export const MINE_COUNT = 500;
-export const FIELD_WIDTH = 50;
-export const FIELD_HEIGHT = 50;
-export const FIELD_SIZE = FIELD_WIDTH * FIELD_HEIGHT;
+	public constructor(
+		public readonly width = 50,
+		public readonly height = 50,
+		public readonly mineCount = Math.round(width * height * 0.2),
+	) {
+		const MINE = "x";
+		const EMPTY = " ";
 
-const offsetMap = new Map([
-	["top-left", FIELD_WIDTH - 1],
-	["top", FIELD_WIDTH],
-	["top-right", FIELD_WIDTH + 1],
-	["left", -1],
-	["right", 1],
-	["bottom-left", -FIELD_WIDTH - 1],
-	["bottom", -FIELD_WIDTH],
-	["bottom-right", -FIELD_WIDTH + 1],
-] as const);
+		const area = width * height;
+		const mask = _.shuffle(MINE.repeat(mineCount).padEnd(area, EMPTY));
+		const offsetMap: [string, number][] = [
+			["top-left", width - 1],
+			["top", width],
+			["top-right", width + 1],
+			["left", -1],
+			["right", 1],
+			["bottom-left", -width - 1],
+			["bottom", -width],
+			["bottom-right", -width + 1],
+		];
 
-const getNeighbor = (index: number, key: PositionKey) => {
-	if (!_.inRange(index, FIELD_SIZE)) return null;
-	if (key.includes("left") && index % FIELD_WIDTH === 0) return null;
-	if (key.includes("right") && index % FIELD_WIDTH === FIELD_WIDTH - 1)
-		return null;
-	if (key.includes("bottom") && index < FIELD_WIDTH) return null;
-	if (key.includes("top") && index >= FIELD_SIZE - FIELD_WIDTH) return null;
-	return index + offsetMap.get(key)!;
-};
-
-const MINE = "X";
-const EMPTY = ".";
-
-const getValues = (mask: string[]) =>
-	mask.map((value, index, array) => {
-		if (value === MINE) return 9;
-		return _.sum(
-			Array.from(offsetMap.keys(), (key) => {
-				const neighbor = getNeighbor(index, key);
-				return neighbor === null || array[neighbor] === EMPTY ? 0 : 1;
-			}),
+		// todo: make this async to support large fields and suspense
+		this.data = mask.map((placeholder, index) =>
+			placeholder === MINE
+				? 9
+				: _.sum(
+						offsetMap.map(
+							([key, offset]) =>
+								_.inRange(index, area) &&
+								!(key.match("left") && index % width === 0) &&
+								!(key.match("right") && index % width === width - 1) &&
+								!(key.match("bottom") && index < width) &&
+								!(key.match("top") && index >= area - width) &&
+								mask[index + offset] === MINE,
+						),
+					),
 		);
-	});
-
-export const createField = () =>
-	getValues(_.shuffle(MINE.repeat(MINE_COUNT).padEnd(FIELD_SIZE, EMPTY)));
+	}
+}

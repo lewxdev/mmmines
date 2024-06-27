@@ -13,7 +13,7 @@ export const renderer = jsxRenderer(({ children }) => {
 			</head>
 			<body>
 				{children}
-				<div id="app-root" />
+				<main id="app" />
 			</body>
 		</html>
 	);

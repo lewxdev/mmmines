@@ -1,9 +1,8 @@
 import { Redis } from "@upstash/redis/cloudflare";
 import { Hono } from "hono";
 import { env } from "hono/adapter";
+import { Fragment } from "hono/jsx";
 import { renderer } from "./renderer";
-
-import App from "./app";
 
 type Env = {
 	UPSTASH_REDIS_REST_URL: string;
@@ -14,9 +13,8 @@ const app = new Hono();
 
 app.get("*", renderer);
 
-app.get("/", (c) => {
-	return c.render(<App />);
-});
+// todo: add ssr / suspense here
+app.get("/", async (c) => c.render(<Fragment />));
 
 app.get("/board", async (c) => {
 	const { UPSTASH_REDIS_REST_URL, UPSTASH_REDIS_REST_TOKEN } = env<Env>(

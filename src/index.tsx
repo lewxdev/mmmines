@@ -4,7 +4,7 @@ import { redis } from "./middleware";
 
 const app = new Hono();
 
-app.use("/api/board/*", redis());
+app.use("/api/field/*", redis());
 
 app.get("/", (c) => {
 	return c.html(

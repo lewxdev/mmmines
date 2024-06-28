@@ -1,4 +1,2 @@
 name = "mmmines"
-compatibility_date = "2023-08-23"
-main = "src/index.tsx"
-minify = true
+pages_build_output_dir = "./dist"

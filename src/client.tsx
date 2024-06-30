@@ -1,8 +1,8 @@
 /// <reference lib="dom" />
 
+import { hc } from "hono/client";
 import { render } from "hono/jsx/dom";
 import { Field } from "./game";
-import { hc } from "hono/client";
 import { AppType } from ".";
 
 const GRID_SIZE = 20;
@@ -14,6 +14,12 @@ if (!response.ok) throw new Error("failed to fetch field data");
 
 const data = await response.json();
 const field = new Field(data.result);
+
+const ws = client.ws.$ws(0);
+
+ws.addEventListener("open", () => {
+	ws.send("Hello, world!");
+});
 
 function App() {
 	return (

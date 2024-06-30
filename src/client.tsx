@@ -2,9 +2,18 @@
 
 import { render } from "hono/jsx/dom";
 import { Field } from "./game";
+import { hc } from "hono/client";
+import app from "./index";
 
 const GRID_SIZE = 20;
 const field = new Field();
+
+// @ts-ignore
+const client = hc<typeof app>("ws://localhost:5173").ws.$ws(0);
+
+client.addEventListener("open", () => {
+	client.send("Hello, world!");
+});
 
 function App() {
 	return (

@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 export class Field {
-	protected readonly data: number[];
+	public readonly data: number[];
 	public static isMine = (value: number) => value % 10 === 9;
 	public static isFlagged = (value: number) => _.inRange(value, 10, 20);
 	public static isExposed = (value: number) => value >= 20;

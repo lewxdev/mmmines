@@ -10,8 +10,8 @@
 		"prepare": "husky"
 	},
 	"dependencies": {
+		"@upstash/redis": "lewxdev/redis-js#patch-bitfield",
 		"hono": "^4.4.8",
-		"ioredis": "^5.4.1",
 		"lodash": "^4.17.21"
 	},
 	"devDependencies": {

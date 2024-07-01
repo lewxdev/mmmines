@@ -13,6 +13,7 @@ export default defineConfig(({ mode }) => {
 						entryFileNames: "static/[name].js",
 					},
 				},
+				target: "esnext",
 			},
 		};
 	}

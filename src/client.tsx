@@ -27,7 +27,7 @@ function App() {
 	return (
 		<div
 			className={`grid gap-[${GRID_SIZE * 0.1}px] grid-cols-[repeat(${field.width}, ${GRID_SIZE}px)] grid-rows-[repeat(${field.height}, ${GRID_SIZE}px)]`}>
-			{values.map((n: number, index: number) => {
+			{values.map((n, index) => {
 				const value = n % 10;
 				const color = `bg-${value < 9 ? `gray-${value * 100 || 50}` : "red-500"}`;
 				const handleClick = () => console.log(value); // tests interactivity

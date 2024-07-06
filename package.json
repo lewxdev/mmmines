@@ -12,8 +12,7 @@
 	"dependencies": {
 		"@upstash/redis": "^1.32.0",
 		"hono": "^4.4.8",
-		"lodash": "^4.17.21",
-		"swr": "^2.2.5"
+		"lodash": "^4.17.21"
 	},
 	"devDependencies": {
 		"@cloudflare/workers-types": "^4.20240529.0",

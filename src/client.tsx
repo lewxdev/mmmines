@@ -1,9 +1,9 @@
 /// <reference lib="dom" />
 
 import { hc } from "hono/client";
-import { render } from "hono/jsx/dom";
+import { render, useState } from "hono/jsx/dom";
 import { Field } from "./game";
-import { AppType } from ".";
+import { type AppType } from ".";
 
 const GRID_SIZE = 20;
 
@@ -18,20 +18,39 @@ const field = new Field(data.result);
 const ws = client.ws.$ws(0);
 
 ws.addEventListener("open", () => {
-	ws.send("Hello, world!");
+	ws.send("connected");
 });
 
 function App() {
+	const [value, setValue] = useState("");
+
 	return (
-		<div
-			className={`grid gap-[${GRID_SIZE * 0.1}px] grid-cols-[repeat(${field.length}, ${GRID_SIZE}px)] grid-rows-[repeat(${field.length}, ${GRID_SIZE}px)]`}>
-			{field["data"].map((n, index) => {
-				const value = n % 10;
-				const color = `bg-${value < 9 ? `gray-${value * 100 || 50}` : "red-500"}`;
-				const handleClick = () => console.log(value); // tests interactivity
-				return <div className={color} key={index} onClick={handleClick} />;
-			})}
-		</div>
+		<>
+			<form
+				onSubmit={(event) => {
+					event.preventDefault();
+					ws.send(value);
+					setValue("");
+				}}>
+				<input
+					placeholder="text"
+					onChange={(event) =>
+						setValue((event.target as HTMLInputElement).value)
+					}
+					value={value}
+				/>
+			</form>
+			<div id="test"></div>
+			<div
+				className={`grid gap-[${GRID_SIZE * 0.1}px] grid-cols-[repeat(${field.length}, ${GRID_SIZE}px)] grid-rows-[repeat(${field.length}, ${GRID_SIZE}px)]`}>
+				{field["data"].map((n, index) => {
+					const value = n % 10;
+					const color = `bg-${value < 9 ? `gray-${value * 100 || 50}` : "red-500"}`;
+					const handleClick = () => console.log(value); // tests interactivity
+					return <div className={color} key={index} onClick={handleClick} />;
+				})}
+			</div>
+		</>
 	);
 }
 

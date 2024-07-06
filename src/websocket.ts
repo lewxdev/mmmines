@@ -1,24 +1,32 @@
-import { Hono } from "hono";
 import { upgradeWebSocket } from "hono/cloudflare-workers";
+import { type WSContext } from "hono/ws";
 
-export const websocket = new Hono();
+export const webSocket = upgradeWebSocket(() => {
+	const clients = new Set<WSContext>();
 
-let clients = 0;
+	return {
+		onMessage: (event, ws) => {
+			const source = event.data.toString();
 
-websocket.get(
-	"/",
-	upgradeWebSocket(() => {
-		return {
-			onMessage: (event, ws) => {
-				console.log(event.type);
-				console.log(event.data);
-				ws.send("hello from the server");
-			},
-			onClose: () => {
-				console.log("Connection closed");
-			},
-		};
-	}),
-);
+			switch (source) {
+				case "connected":
+					console.log("connection opened");
+					clients.add(ws);
+					break;
 
-export type WebSocketApp = typeof websocket;
+				default:
+					console.log(`received: "${source}"`);
+					clients.forEach((client) => {
+						if (client.readyState === WebSocket.OPEN) {
+							client.send(source);
+						}
+					});
+					break;
+			}
+		},
+		onClose: (_, ws) => {
+			console.log("connection closed");
+			clients.delete(ws);
+		},
+	};
+});

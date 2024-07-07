@@ -4,12 +4,10 @@ import { api } from "./api";
 import { redis } from "./middleware";
 import { renderer } from "./renderer";
 
-const app = new Hono();
-
-app.get("*", renderer);
-app.get("/", (c) => c.render(<Fragment />)); // todo: add ssr / suspense here
-
-app.use("/api/field/*", redis());
-app.route("/api", api);
+const app = new Hono()
+	.use("*", renderer)
+	.get("/", (c) => c.render(<Fragment />)) // todo: add ssr / suspense here
+	.use("/api/field/*", redis)
+	.route("/api", api);
 
 export default app;

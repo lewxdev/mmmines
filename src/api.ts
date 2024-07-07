@@ -5,22 +5,19 @@ import { Field } from "./game";
 export const api = new Hono()
 	.get("/field", async (c) => {
 		const redis = c.get("redis");
-		const field = await redis.get("field");
-		return c.json({ result: field });
+		const result = await redis.get<string>("field");
+		return c.json({ result }, 200);
 	})
 	.get("/field/seed", async (c) => {
 		const redis = c.get("redis");
-		const bitfield = redis.bitfield("field");
-		await redis.del("field");
-		for (const [index, value] of new Field().data.entries()) {
-			bitfield.set("u5", `#${index}`, value);
-		}
-		await bitfield.exec();
-		return c.json({ result: await redis.get("field") });
+		const data = await redis.get<string>("field");
+		const field = new Field(data ? data.length + 10 : null);
+		const result = await redis.set("field", Buffer.from(field.data));
+		return c.json({ result }, 200);
 	})
 	.get("/field/:offset", async (c) => {
 		const redis = c.get("redis");
 		const offset = c.req.param("offset");
-		const value = await redis.bitfield("field").get("u5", `#${offset}`).exec();
-		return c.json({ result: value });
+		const result = await redis.bitfield("field").get("u8", `#${offset}`).exec();
+		return c.json({ result }, 200);
 	});

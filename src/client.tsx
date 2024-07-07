@@ -2,14 +2,23 @@
 
 import { render } from "hono/jsx/dom";
 import { Field } from "./game";
+import { hc } from "hono/client";
+import { AppType } from ".";
 
 const GRID_SIZE = 20;
-const field = new Field();
+
+const client = hc<AppType>(location.origin);
+const response = await client.api.field.$get();
+
+if (!response.ok) throw new Error("failed to fetch field data");
+
+const data = await response.json();
+const field = new Field(data.result);
 
 function App() {
 	return (
 		<div
-			className={`grid gap-[${GRID_SIZE * 0.1}px] grid-cols-[repeat(${field.width}, ${GRID_SIZE}px)] grid-rows-[repeat(${field.height}, ${GRID_SIZE}px)]`}>
+			className={`grid gap-[${GRID_SIZE * 0.1}px] grid-cols-[repeat(${field.length}, ${GRID_SIZE}px)] grid-rows-[repeat(${field.length}, ${GRID_SIZE}px)]`}>
 			{field["data"].map((n, index) => {
 				const value = n % 10;
 				const color = `bg-${value < 9 ? `gray-${value * 100 || 50}` : "red-500"}`;

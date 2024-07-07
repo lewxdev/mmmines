@@ -13,6 +13,8 @@ export default defineConfig(({ mode }) => {
 						entryFileNames: "static/[name].js",
 					},
 				},
+				// enables top-level await for client.tsx
+				target: "esnext",
 			},
 		};
 	}

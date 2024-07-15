@@ -1,15 +1,18 @@
 {
-  "name": "mmmines-v4",
-  "version": "0.1.0",
+  "name": "mmmines",
   "private": true,
   "scripts": {
     "dev": "esrun app/server.ts",
     "build": "next build",
     "start": "NODE_ENV=production esrun app/server.ts",
-    "lint": "next lint"
+    "lint": "next lint",
+    "format": "prettier --cache --write .",
+    "prepare": "husky"
   },
   "dependencies": {
+    "@upstash/redis": "^1.32.0",
     "geist": "^1.3.1",
+    "lodash": "^4.17.21",
     "next": "14.2.5",
     "react": "^18",
     "react-dom": "^18",
@@ -17,15 +20,33 @@
     "socket.io-client": "^4.7.5"
   },
   "devDependencies": {
+    "@commitlint/cli": "^19.3.0",
+    "@commitlint/config-conventional": "^19.2.2",
     "@flydotio/dockerfile": "^0.5.8",
+    "@types/lodash": "^4.17.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "esrun": "^3.2.26",
+    "eslint-config-prettier": "^9.1.0",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
     "postcss": "^8",
+    "prettier": "^3.3.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "next/core-web-vitals",
+      "prettier"
+    ]
   }
 }

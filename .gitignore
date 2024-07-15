@@ -1,35 +1,53 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# based on the node gitignore file from github/gitignore
+# see: https://github.com/github/gitignore/blob/main/Node.gitignore
+# learn more: https://git-scm.com/docs/gitignore
+
+# build
+build
+
+# caches
+.cache
+.eslintcache
+.node_repl_history
+.npm
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
+node_modules
 
-# testing
-/coverage
+# environment
+.env
+.env*.local
+.dev.vars
 
-# next.js
-/.next/
-/out/
+# logs
+logs
+*.log
+*-debug.log*
+*-error.log*
 
-# production
-/build
+# runtime
+pids
+*.pid
+*.seed
+*.pid.lock
 
-# misc
+# miscellaneous
+.temp
 .DS_Store
+*.tgz
 *.pem
 
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# addons
+# see: https://nodejs.org/api/addons.html
+build/Release
 
-# local env files
-.env*.local
+# reports
+# see: https://nodejs.org/api/report.html
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
-# vercel
-.vercel
+# next.js
+.next
+out
 
 # typescript
 *.tsbuildinfo

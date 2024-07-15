@@ -2,43 +2,21 @@
 
 import { useEffect, useState } from "react";
 import { socket } from "./socket";
+import useSocket from "@/hooks/useSocket";
 
 export default function Page() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState("N/A");
   const [text, setText] = useState("");
   const [messages, setMessages] = useState<string[]>([]);
+  const { isConnected, transport } = useSocket();
 
   useEffect(() => {
-    if (socket.connected) {
-      onConnect();
-    }
-
-    function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
-
-      socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
-      });
-    }
-
-    function onDisconnect() {
-      setIsConnected(false);
-      setTransport("N/A");
-    }
-
     function onMessage(message: string) {
       setMessages((messages) => [...messages, message]);
     }
 
-    socket.on("connect", onConnect);
-    socket.on("disconnect", onDisconnect);
     socket.on("message", onMessage);
 
     return () => {
-      socket.off("connect", onConnect);
-      socket.off("disconnect", onDisconnect);
       socket.off("message", onMessage);
     };
   }, []);

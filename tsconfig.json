@@ -1,13 +1,10 @@
 {
-	"compilerOptions": {
-		"target": "ESNext",
-		"module": "ESNext",
-		"moduleResolution": "Bundler",
-		"strict": true,
-		"skipLibCheck": true,
-		"lib": ["ESNext"],
-		"types": ["@cloudflare/workers-types", "vite/client"],
-		"jsx": "react-jsx",
-		"jsxImportSource": "hono/jsx"
-	}
+  "extends": ["@tsconfig/next", "@tsconfig/strictest"],
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }

@@ -3,23 +3,20 @@
 # learn more: https://git-scm.com/docs/gitignore
 
 # build
-dist
+build
 
 # caches
 .cache
 .eslintcache
 .node_repl_history
 .npm
-.wrangler
-*.tsbuildinfo
 
 # dependencies
 node_modules
 
 # environment
 .env
-.env.*.local
-.env.local
+.env*.local
 .dev.vars
 
 # logs
@@ -27,14 +24,6 @@ logs
 *.log
 *-debug.log*
 *-error.log*
-
-# addons
-# see: https://nodejs.org/api/addons.html
-build/Release
-
-# reports
-# see: https://nodejs.org/api/report.html
-report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 
 # runtime
 pids
@@ -46,3 +35,20 @@ pids
 .temp
 .DS_Store
 *.tgz
+*.pem
+
+# addons
+# see: https://nodejs.org/api/addons.html
+build/Release
+
+# reports
+# see: https://nodejs.org/api/report.html
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# next.js
+.next
+out
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

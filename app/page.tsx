@@ -1,40 +1,56 @@
 "use client";
 
 import useSocket from "@/hooks/useSocket";
+import clsx from "clsx";
 import { useEffect, useState } from "react";
-import { Field } from "./game";
+import type { State } from "../utils/game";
 import { socket } from "./socket";
 
-const GRID_SIZE = 20;
-const field = new Field();
-
-const colorMap = new Map<number, string>([
-  [0, "bg-gray-50"],
-  [1, "bg-gray-100"],
-  [2, "bg-gray-200"],
-  [3, "bg-gray-300"],
-  [4, "bg-gray-400"],
-  [5, "bg-gray-500"],
-  [6, "bg-gray-600"],
-  [7, "bg-gray-700"],
-  [8, "bg-gray-800"],
-  [9, "bg-red-500"],
+const GRID_SIZE = 2;
+const colorMap = new Map<State, string>([
+  [0, "text-transparent"],
+  [1, "text-gray-300"],
+  [2, "text-gray-400"],
+  [3, "text-gray-500"],
+  [4, "text-gray-600"],
+  [5, "text-gray-700"],
+  [6, "text-gray-800"],
+  [7, "text-gray-900"],
+  [8, "text-gray-950"],
+  ["mine", "bg-red-500"],
+  ["unknown", "bg-gray-100"],
+  ["flagged", "bg-yellow-300"],
 ]);
 
+function Cell({ index, state }: { index: number; state: State }) {
+  return (
+    <div
+      className={clsx(
+        "flex items-center justify-center text-xl font-bold",
+        colorMap.get(state),
+      )}
+      onClick={() => {
+        socket.emit("expose", index);
+      }}
+      onContextMenu={(event) => {
+        event.preventDefault();
+        socket.emit("flag", index);
+      }}
+    >
+      {typeof state === "number" && state}
+    </div>
+  );
+}
+
 export default function Page() {
-  const [text, setText] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [cells, setCells] = useState<State[] | null>(null);
   const { isConnected, transport } = useSocket();
+  const size = cells ? Math.sqrt(cells.length) : 0;
 
   useEffect(() => {
-    function onMessage(message: string) {
-      setMessages((messages) => [...messages, message]);
-    }
-
-    socket.on("message", onMessage);
-
+    socket.on("update", setCells);
     return () => {
-      socket.off("message", onMessage);
+      socket.off("update", setCells);
     };
   }, []);
 
@@ -42,38 +58,17 @@ export default function Page() {
     <div>
       <p>Status: {isConnected ? "connected" : "disconnected"}</p>
       <p>Transport: {transport}</p>
-      <ul>
-        {messages.map((message, index) => (
-          <li key={index}>{message}</li>
-        ))}
-      </ul>
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          socket.emit("message", text);
-          setText("");
-        }}
-      >
-        <input
-          placeholder="Enter a message"
-          value={text}
-          onChange={(e) => setText(e.currentTarget.value)}
-        />
-        <button type="submit">submit</button>
-      </form>
       <div
+        className="grid select-none"
         style={{
-          display: "grid",
-          gap: `${GRID_SIZE * 0.1}px`,
-          gridTemplateColumns: `repeat(${field.width}, ${GRID_SIZE}px)`,
-          gridTemplateRows: `repeat(${field.height}, ${GRID_SIZE}px)`,
+          gap: `${GRID_SIZE * 0.1}em`,
+          gridTemplateColumns: `repeat(${size}, ${GRID_SIZE}em)`,
+          gridTemplateRows: `repeat(${size}, ${GRID_SIZE}em)`,
         }}
       >
-        {field["data"].map((n, index) => {
-          const value = n % 10;
-          const color = colorMap.get(value)!;
-          return <div className={color} key={index} />;
-        })}
+        {cells?.map((state, index) => (
+          <Cell index={index} key={index} state={state} />
+        ))}
       </div>
     </div>
   );

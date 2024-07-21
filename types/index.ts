@@ -1,7 +1,10 @@
+import type { State } from "@/utils/game";
+
 export interface ServerToClientEvents {
-  message: (message: string, callback?: (message: string) => void) => void;
+  update(state: State[]): void;
 }
 
 export interface ClientToServerEvents {
-  message: (message: string) => void;
+  expose(index: number): void;
+  flag(index: number): void;
 }

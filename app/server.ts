@@ -15,17 +15,21 @@ async function main() {
   const httpServer = createServer(app.getRequestHandler());
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
 
-  const field = await Field.fromRedis();
+  let field = await Field.fromRedis();
+  field = await field.handleComplete();
+
   io.on("connection", (socket) => {
     socket.emit("update", field.plots);
 
-    socket.on("expose", (index) => {
+    socket.on("expose", async (index) => {
       field.exposeCell(index);
+      field = await field.handleComplete();
       io.emit("update", field.plots);
     });
 
-    socket.on("flag", (index) => {
+    socket.on("flag", async (index) => {
       field.flagCell(index);
+      field = await field.handleComplete();
       io.emit("update", field.plots);
     });
   });

@@ -21,7 +21,7 @@ export class Field {
     });
   }
 
-  public static async create(size = 50) {
+  public static async create(size = 10) {
     const area = size ** 2;
     const mineCount = Math.round(area * 0.15);
     const data = await redis.encodeData(
@@ -62,11 +62,10 @@ export class Field {
     }
   }
 
-  public get isComplete() {
-    return this.data.every((data, index) => {
-      const plot = this.plots[index]!;
-      return (isMine(data) && plot === "flagged") || typeof plot === "number";
-    });
+  public async handleComplete() {
+    return this.data.every((byte) => isExposed(byte) || isMine(byte))
+      ? await Field.create(this.size + 10)
+      : this;
   }
 }
 

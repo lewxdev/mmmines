@@ -23,6 +23,7 @@ export function Field() {
   return (
     <div
       className="grid select-none bg-white"
+      onContextMenu={(event) => event.preventDefault()}
       style={{
         gap: `${GRID_SIZE * 0.125}rem`,
         gridTemplateColumns: `repeat(${size}, ${GRID_SIZE}rem)`,

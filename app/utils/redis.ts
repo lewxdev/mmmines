@@ -1,5 +1,5 @@
-import { Redis } from "@upstash/redis";
 import _ from "lodash";
+import { Redis } from "@upstash/redis";
 import "dotenv/config";
 
 const redis = Redis.fromEnv();

@@ -1,27 +1,21 @@
-import { socket } from "@/app/socket";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { socket } from "@/socket";
 
 export default function useSocket() {
-  const [isConnected, setIsConnected] = useState(false);
-  const [transport, setTransport] = useState("N/A");
-
   useEffect(() => {
     if (socket.connected) {
       onConnect();
     }
 
     function onConnect() {
-      setIsConnected(true);
-      setTransport(socket.io.engine.transport.name);
-
+      console.log("connected", socket.io.engine.transport.name);
       socket.io.engine.on("upgrade", (transport) => {
-        setTransport(transport.name);
+        console.log("upgraded", transport.name);
       });
     }
 
     function onDisconnect() {
-      setIsConnected(false);
-      setTransport("N/A");
+      console.log("disconnected");
     }
 
     socket.on("connect", onConnect);
@@ -32,9 +26,4 @@ export default function useSocket() {
       socket.off("disconnect", onDisconnect);
     };
   }, []);
-
-  return {
-    isConnected,
-    transport,
-  };
 }

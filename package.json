@@ -57,6 +57,9 @@
   "prettier": {
     "plugins": [
       "prettier-plugin-tailwindcss"
+    ],
+    "tailwindFunctions": [
+      "tw"
     ]
   }
 }

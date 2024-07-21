@@ -2,7 +2,7 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
-import { Field } from "../utils/game";
+import { Field } from "@/utils/game";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -17,16 +17,16 @@ async function main() {
 
   const field = await Field.fromRedis();
   io.on("connection", (socket) => {
-    socket.emit("update", field.state);
+    socket.emit("update", field.plots);
 
     socket.on("expose", (index) => {
       field.exposeCell(index);
-      io.emit("update", field.state);
+      io.emit("update", field.plots);
     });
 
     socket.on("flag", (index) => {
       field.flagCell(index);
-      io.emit("update", field.state);
+      io.emit("update", field.plots);
     });
   });
 

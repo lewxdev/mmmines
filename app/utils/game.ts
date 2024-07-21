@@ -1,26 +1,24 @@
 import _ from "lodash";
-import * as redis from "./redis";
+import * as redis from "@/utils/redis";
 
-export type State = number | "mine" | "unknown" | "flagged";
+export type PlotState = number | "mine" | "unknown" | "flagged";
 
 export class Field {
-  public readonly state: State[];
-
   private constructor(
     public readonly size: number,
     public readonly mineCount: number,
-    public readonly data: number[],
+    private readonly data: number[],
+    public readonly plots: PlotState[] = data.map(getState),
   ) {
     const setBit = redis.getDebouncedSetBit();
     this.data = new Proxy(data, {
       set: (target, prop, value) => {
         const index = typeof prop !== "number" ? _.toNumber(prop) : prop;
-        this.state[index] = getState(value, true);
+        this.plots[index] = getState(value);
         setBit(index, value);
         return Reflect.set(target, index, value);
       },
     });
-    this.state = data.map((byte) => getState(byte, true));
   }
 
   public static async create(size = 50) {
@@ -47,58 +45,28 @@ export class Field {
     }
   }
 
+  public exposeCell(index: number) {
+    if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
+      // set exposed state bit, unset the flagged state bit
+      this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);
+      if (getValue(this.data[index]) === 0) {
+        getOffsets(this.size, index).forEach(this.exposeCell.bind(this));
+      }
+    }
+  }
+
   public flagCell(index: number) {
-    if (this.data[index] && getState(this.data[index]) !== "exposed") {
+    if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
       // toggle the flagged state bit
       this.data[index] ^= 1 << 4;
     }
   }
 
-  public exposeCell(index: number) {
-    if (
-      typeof this.data[index] === "undefined" ||
-      getState(this.data[index]) === "exposed"
-    ) {
-      return;
-    }
-    // set exposed state bit, unset the flagged state bit
-    this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);
-    if (isMine(this.data[index])) {
-      return;
-    }
-    if (getValue(this.data[index]) === 0) {
-      getOffsets(this.size, index).forEach((offset) => this.exposeCell(offset));
-    }
-  }
-
   public get isComplete() {
     return this.data.every((data, index) => {
-      const state = this.state[index]!;
-      return (isMine(data) && state === "flagged") || typeof state === "number";
+      const plot = this.plots[index]!;
+      return (isMine(data) && plot === "flagged") || typeof plot === "number";
     });
-  }
-}
-
-function isMine(value: number) {
-  return getValue(value) === 9;
-}
-
-function getValue(byte: number) {
-  return byte & 0b1111;
-}
-
-function getState(byte: number): Exclude<State, "mine" | number> | "exposed";
-function getState(byte: number, exposeValue: true): State;
-function getState(byte: number, exposeValue?: boolean) {
-  switch (byte >> 4) {
-    case 0b0000:
-      return "unknown";
-    case 0b0001:
-      return "flagged";
-    case 0b0010:
-      return exposeValue ? (isMine(byte) ? "mine" : getValue(byte)) : "exposed";
-    default:
-      throw new Error(`unexpected state on byte: ${byte.toString(2)}`);
   }
 }
 
@@ -116,4 +84,29 @@ function getOffsets(size: number, index: number) {
     !isBottom && index + size,
     !isBottom && !isRight && index + size + 1,
   ].filter((offset) => offset !== false);
+}
+
+function getState(byte: number) {
+  switch (byte >> 4) {
+    case 0b0000:
+      return "unknown";
+    case 0b0001:
+      return "flagged";
+    case 0b0010:
+      return isMine(byte) ? "mine" : getValue(byte);
+    default:
+      throw new Error(`unexpected state on byte: ${byte.toString(2)}`);
+  }
+}
+
+function getValue(byte: number) {
+  return byte & 0b1111;
+}
+
+function isExposed(byte: number) {
+  return byte & (1 << 5) ? true : false;
+}
+
+function isMine(byte: number) {
+  return getValue(byte) === 9;
 }

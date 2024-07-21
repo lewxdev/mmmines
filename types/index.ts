@@ -1,7 +1,7 @@
-import type { Cell } from "@/utils/game";
+import type { State } from "@/utils/game";
 
 export interface ServerToClientEvents {
-  update(state: Cell[]): void;
+  update(state: State[]): void;
 }
 
 export interface ClientToServerEvents {

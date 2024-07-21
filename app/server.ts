@@ -17,16 +17,16 @@ async function main() {
 
   const field = await Field.fromRedis();
   io.on("connection", (socket) => {
-    socket.emit("update", field.cells);
+    socket.emit("update", field.state);
 
     socket.on("expose", (index) => {
       field.exposeCell(index);
-      io.emit("update", field.cells);
+      io.emit("update", field.state);
     });
 
     socket.on("flag", (index) => {
       field.flagCell(index);
-      io.emit("update", field.cells);
+      io.emit("update", field.state);
     });
   });
 

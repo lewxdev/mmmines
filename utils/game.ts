@@ -1,16 +1,10 @@
 import _ from "lodash";
-import { redis } from "./redis";
+import * as redis from "./redis";
 
-export type Cell = number | "mine" | "unknown" | "flagged";
-
-enum StateBit {
-  UNKNOWN = 0b0000,
-  FLAGGED = 0b0001,
-  EXPOSED = 0b0010,
-}
+export type State = number | "mine" | "unknown" | "flagged";
 
 export class Field {
-  public readonly cells: Cell[];
+  public readonly state: State[];
 
   private constructor(
     public readonly size: number,
@@ -21,12 +15,12 @@ export class Field {
     this.data = new Proxy(data, {
       set: (target, prop, value) => {
         const index = typeof prop !== "number" ? _.toNumber(prop) : prop;
-        this.cells[index] = getState(value, true);
+        this.state[index] = getState(value, true);
         setBit(index, value);
         return Reflect.set(target, index, value);
       },
     });
-    this.cells = data.map((byte) => getState(byte, true));
+    this.state = data.map((byte) => getState(byte, true));
   }
 
   public static async create(size = 50) {
@@ -79,7 +73,7 @@ export class Field {
 
   public get isComplete() {
     return this.data.every((data, index) => {
-      const state = this.cells[index]!;
+      const state = this.state[index]!;
       return (isMine(data) && state === "flagged") || typeof state === "number";
     });
   }
@@ -93,19 +87,16 @@ function getValue(byte: number) {
   return byte & 0b1111;
 }
 
-function getState<ExposeValue extends boolean | undefined = undefined>(
-  byte: number,
-  exposeValue?: ExposeValue,
-) {
+function getState(byte: number): Exclude<State, "mine" | number> | "exposed";
+function getState(byte: number, exposeValue: true): State;
+function getState(byte: number, exposeValue?: boolean) {
   switch (byte >> 4) {
-    case StateBit.UNKNOWN:
+    case 0b0000:
       return "unknown";
-    case StateBit.FLAGGED:
+    case 0b0001:
       return "flagged";
-    case StateBit.EXPOSED:
-      return (
-        exposeValue ? (isMine(byte) ? "mine" : getValue(byte)) : "exposed"
-      ) as ExposeValue extends true ? "mine" | number : "exposed";
+    case 0b0010:
+      return exposeValue ? (isMine(byte) ? "mine" : getValue(byte)) : "exposed";
     default:
       throw new Error(`unexpected state on byte: ${byte.toString(2)}`);
   }

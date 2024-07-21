@@ -7,8 +7,10 @@ on:
       - main
 jobs:
   deploy:
-    name: Deploy app
     runs-on: ubuntu-latest
+    environment:
+      name: production
+      url: https://mmmines.fly.dev
     concurrency: deploy-group # optional: ensure only one action runs at a time
     steps:
       - uses: actions/checkout@v4

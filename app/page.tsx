@@ -1,13 +1,13 @@
 "use client";
 
 import useSocket from "@/hooks/useSocket";
-import { useEffect, useState } from "react";
-import type { Cell } from "../utils/game";
-import { socket } from "./socket";
 import clsx from "clsx";
+import { useEffect, useState } from "react";
+import type { State } from "../utils/game";
+import { socket } from "./socket";
 
 const GRID_SIZE = 2;
-const colorMap = new Map<Cell, string>([
+const colorMap = new Map<State, string>([
   [0, "text-transparent"],
   [1, "text-gray-300"],
   [2, "text-gray-400"],
@@ -22,7 +22,7 @@ const colorMap = new Map<Cell, string>([
   ["flagged", "bg-yellow-300"],
 ]);
 
-function Cell({ index, state }: { index: number; state: Cell }) {
+function Cell({ index, state }: { index: number; state: State }) {
   return (
     <div
       className={clsx(
@@ -37,18 +37,21 @@ function Cell({ index, state }: { index: number; state: Cell }) {
         socket.emit("flag", index);
       }}
     >
-      {state !== "flagged" && state !== "unknown" && state !== "mine" && state}
+      {typeof state === "number" && state}
     </div>
   );
 }
 
 export default function Page() {
-  const [cells, setCells] = useState<Cell[] | null>(null);
+  const [cells, setCells] = useState<State[] | null>(null);
   const { isConnected, transport } = useSocket();
   const size = cells ? Math.sqrt(cells.length) : 0;
 
   useEffect(() => {
     socket.on("update", setCells);
+    return () => {
+      socket.off("update", setCells);
+    };
   }, []);
 
   return (

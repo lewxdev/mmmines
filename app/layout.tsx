@@ -9,7 +9,11 @@ export const metadata: Metadata = {
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
     <html lang="en">
-      <body className={GeistSans.className}>{props.children}</body>
+      <body className={GeistSans.className}>
+        <div className="flex h-screen items-center justify-center">
+          {props.children}
+        </div>
+      </body>
     </html>
   );
 }

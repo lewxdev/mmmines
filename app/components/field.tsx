@@ -22,7 +22,7 @@ export function Field() {
 
   return (
     <div
-      className="grid select-none bg-white"
+      className="grid max-h-full max-w-full select-none overflow-auto bg-white"
       onContextMenu={(event) => event.preventDefault()}
       style={{
         gap: `${GRID_SIZE * 0.125}rem`,

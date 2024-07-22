@@ -18,7 +18,11 @@ async function main() {
   let field = await Field.fromRedis();
   field = await field.handleComplete();
 
+  let clientsCount = 0;
+
   io.on("connection", (socket) => {
+    clientsCount++;
+    io.emit("clientsCount", clientsCount);
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
@@ -31,6 +35,11 @@ async function main() {
       field.flagCell(index);
       field = await field.handleComplete();
       io.emit("update", field.plots);
+    });
+
+    socket.on("disconnect", () => {
+      clientsCount--;
+      io.emit("clientsCount", clientsCount);
     });
   });
 

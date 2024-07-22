@@ -18,8 +18,9 @@ export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
     <ClerkProvider>
       <html lang="en">
         <body className={GeistSans.className}>
-          <div className="p-4">
-            <h1 className="text-4xl">mmmines</h1>
+          <header className="sticky top-0 bg-white">
+            <div className="container mx-auto">
+              <h1 className="text-4xl">mmmines</h1>
               <SignedOut>
                 <SignInButton />
               </SignedOut>
@@ -27,9 +28,10 @@ export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
                 <SignOutButton />
               </SignedIn>
             </div>
-          <div className="flex h-screen items-center justify-center">
+          </header>
+          <main className="flex items-center justify-center">
             {props.children}
-          </div>
+          </main>
         </body>
       </html>
     </ClerkProvider>

@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@clerk/nextjs": "^5.2.4",
     "@upstash/redis": "^1.32.0",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.5",

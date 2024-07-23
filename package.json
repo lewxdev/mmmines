@@ -2,20 +2,19 @@
   "name": "mmmines",
   "private": true,
   "scripts": {
-    "dev": "esrun app/server.ts",
-    "build": "next build",
+    "dev": "esrun --watch app/server.ts",
     "start": "NODE_ENV=production esrun app/server.ts",
+    "build": "next build",
     "lint": "next lint",
     "format": "prettier --cache --write .",
     "prepare": "husky"
   },
   "dependencies": {
     "@clerk/nextjs": "^5.2.4",
-    "@upstash/redis": "^1.32.0",
     "clsx": "^2.1.1",
-    "dotenv": "^16.4.5",
     "esrun": "^3.2.26",
     "geist": "^1.3.1",
+    "ioredis": "^5.4.1",
     "lodash": "^4.17.21",
     "lucide-react": "^0.414.0",
     "next": "14.2.5",

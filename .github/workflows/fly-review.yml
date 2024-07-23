@@ -33,7 +33,6 @@ jobs:
         uses: superfly/fly-pr-review-apps@1.2.1
         with:
           secrets: |
-            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
             NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-            UPSTASH_REDIS_REST_URL=${{ secrets.UPSTASH_REDIS_REST_URL }}
-            UPSTASH_REDIS_REST_TOKEN=${{ secrets.UPSTASH_REDIS_REST_TOKEN }}
+            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            REDIS_URL=${{ secrets.REDIS_URL }}

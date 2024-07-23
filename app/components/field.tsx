@@ -1,21 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { HEADER_HEIGHT } from "@/components/header";
 import { Plot } from "@/components/plot";
 import { useEvent } from "@/hooks/use-event";
 import { useSocket } from "@/hooks/use-socket";
-import { socket } from "@/socket";
-import type { PlotState } from "@/utils/game";
 
 const GRID_SIZE = 2;
 const GAP_SIZE = GRID_SIZE * 0.125;
 
 export function Field() {
   useSocket();
-  const [plots, setPlots] = useState<PlotState[] | null>(null);
+  const [plots] = useEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
-  useEvent(socket, "update", setPlots);
 
   useEffect(() => {
     document.documentElement.style.setProperty(

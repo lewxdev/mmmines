@@ -59,8 +59,10 @@
   },
   "prettier": {
     "importOrder": [
+      "<BUILTIN_MODULES>",
       "^react$",
       "<THIRD_PARTY_MODULES>",
+      "^@/.*$",
       "^[.]"
     ],
     "importOrderTypeScriptVersion": "5.0.0",

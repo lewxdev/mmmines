@@ -1,8 +1,8 @@
 import { createServer } from "node:http";
-import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
-import { Field } from "@/utils/game";
 import next from "next";
 import { Server } from "socket.io";
+import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
+import { Field } from "@/utils/game";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";

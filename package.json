@@ -61,6 +61,7 @@
     "importOrder": [
       "<BUILTIN_MODULES>",
       "^react$",
+      "^next$",
       "<THIRD_PARTY_MODULES>",
       "^@/.*$",
       "^[.]"

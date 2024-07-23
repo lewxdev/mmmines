@@ -7,12 +7,12 @@ import {
   SignOutButton,
 } from "@clerk/nextjs";
 import { UsersIcon } from "lucide-react";
-import { useEvent } from "@/hooks/use-event";
+import { useSocketEvent } from "@/hooks/use-socket-event";
 
 export const HEADER_HEIGHT = 64;
 
 export function Header() {
-  const [clientsCount] = useEvent("clientsCount");
+  const [clientsCount] = useSocketEvent("clientsCount");
 
   return (
     <header

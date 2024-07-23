@@ -3,15 +3,15 @@
 import { useEffect } from "react";
 import { HEADER_HEIGHT } from "@/components/header";
 import { Plot } from "@/components/plot";
-import { useEvent } from "@/hooks/use-event";
 import { useSocket } from "@/hooks/use-socket";
+import { useSocketEvent } from "@/hooks/use-socket-event";
 
 const GRID_SIZE = 2;
 const GAP_SIZE = GRID_SIZE * 0.125;
 
 export function Field() {
   useSocket();
-  const [plots] = useEvent("update");
+  const [plots] = useSocketEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
 
   useEffect(() => {

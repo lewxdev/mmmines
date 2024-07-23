@@ -1,11 +1,14 @@
-import { Redis } from "@upstash/redis";
+import { Redis } from "ioredis";
 import _ from "lodash";
-import "dotenv/config";
 
-const redis = Redis.fromEnv();
 const key = "field:data";
 
+function getClient() {
+  return new Redis(process.env["REDIS_URL"]!, { family: 6 });
+}
+
 export async function decodeData() {
+  const redis = getClient();
   const value = await redis.get(key);
   if (typeof value !== "string" || !value) {
     throw new Error(`unexpected data on key: ${key}`);
@@ -14,20 +17,8 @@ export async function decodeData() {
 }
 
 export async function encodeData(value: number[]) {
+  const redis = getClient();
   const binaryString = Buffer.from(value).toString("binary");
   await redis.set(key, binaryString);
   return value;
-}
-
-export function getDebouncedSetBit() {
-  let bitfield = redis.bitfield(key);
-  const debouncedExec = _.debounce(async () => {
-    const response = await bitfield.exec();
-    bitfield = redis.bitfield(key);
-    return response;
-  }, 1000);
-  return (offset: number, value: number) => {
-    bitfield.set("u8", `#${offset}`, value);
-    return debouncedExec();
-  };
 }

@@ -10,12 +10,12 @@ export class Field {
     private readonly data: number[],
     public readonly plots: PlotState[] = data.map(getState),
   ) {
-    const setBit = redis.getDebouncedSetBit();
+    const debouncedEncodeData = _.debounce(redis.encodeData, 1000);
     this.data = new Proxy(data, {
       set: (target, prop, value) => {
         const index = typeof prop !== "number" ? _.toNumber(prop) : prop;
         this.plots[index] = getState(value);
-        setBit(index, value);
+        debouncedEncodeData(this.data);
         return Reflect.set(target, index, value);
       },
     });

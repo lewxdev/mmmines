@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import { HEADER_HEIGHT } from "@/components/header";
 import { Plot } from "@/components/plot";
-import useSocket from "@/hooks/use-socket";
+import { useEvent } from "@/hooks/use-event";
+import { useSocket } from "@/hooks/use-socket";
 import { socket } from "@/socket";
 import type { PlotState } from "@/utils/game";
 
@@ -14,13 +15,7 @@ export function Field() {
   useSocket();
   const [plots, setPlots] = useState<PlotState[] | null>(null);
   const size = plots ? Math.sqrt(plots.length) : 0;
-
-  useEffect(() => {
-    socket.on("update", setPlots);
-    return () => {
-      socket.off("update", setPlots);
-    };
-  }, []);
+  useEvent(socket, "update", setPlots);
 
   useEffect(() => {
     document.documentElement.style.setProperty(

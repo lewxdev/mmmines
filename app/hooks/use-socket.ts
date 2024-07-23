@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { socket } from "@/socket";
 
-export default function useSocket() {
+export const useSocket = () => {
   useEffect(() => {
     if (socket.connected) {
       onConnect();
@@ -26,4 +26,4 @@ export default function useSocket() {
       socket.off("disconnect", onDisconnect);
     };
   }, []);
-}
+};

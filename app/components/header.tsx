@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+import { useEvent } from "@/hooks/use-event";
 import { socket } from "@/socket";
 import {
   SignedIn,
@@ -8,19 +10,12 @@ import {
   SignOutButton,
 } from "@clerk/nextjs";
 import { UsersIcon } from "lucide-react";
-import { useEffect, useState } from "react";
 
 export const HEADER_HEIGHT = 64;
 
 export function Header() {
   const [clientsCount, setClientsCount] = useState(0);
-
-  useEffect(() => {
-    socket.on("clientsCount", setClientsCount);
-    return () => {
-      socket.off("clientsCount", setClientsCount);
-    };
-  }, []);
+  useEvent(socket, "clientsCount", setClientsCount);
 
   return (
     <header

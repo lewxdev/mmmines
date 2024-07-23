@@ -1,8 +1,8 @@
 import { createServer } from "node:http";
-import next from "next";
-import { Server } from "socket.io";
 import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
 import { Field } from "@/utils/game";
+import next from "next";
+import { Server } from "socket.io";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -15,10 +15,10 @@ async function main() {
   const httpServer = createServer(app.getRequestHandler());
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
 
+  let clientsCount = 0;
+
   let field = await Field.fromRedis();
   field = await field.handleComplete();
-
-  let clientsCount = 0;
 
   io.on("connection", (socket) => {
     clientsCount++;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { socket } from "@/socket";
 
-export default function useSocket() {
+export function useSocket() {
   useEffect(() => {
     if (socket.connected) {
       onConnect();

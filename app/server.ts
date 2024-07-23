@@ -15,10 +15,14 @@ async function main() {
   const httpServer = createServer(app.getRequestHandler());
   const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
 
+  let clientsCount = 0;
+
   let field = await Field.fromRedis();
   field = await field.handleComplete();
 
   io.on("connection", (socket) => {
+    clientsCount++;
+    io.emit("clientsCount", clientsCount);
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
@@ -31,6 +35,11 @@ async function main() {
       field.flagCell(index);
       field = await field.handleComplete();
       io.emit("update", field.plots);
+    });
+
+    socket.on("disconnect", () => {
+      clientsCount--;
+      io.emit("clientsCount", clientsCount);
     });
   });
 

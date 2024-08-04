@@ -1,4 +1,5 @@
 import clsx from "clsx";
+import { useLongPress } from "@/hooks/use-long-press";
 import { socket } from "@/socket";
 import { tw } from "@/utils";
 import type { PlotState } from "@/utils/game";
@@ -9,24 +10,27 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Plot({ className, index, state, ...props }: Props) {
+  const args = useLongPress({
+    onLongPress: () => {
+      if (state === "flagged" || state === "unknown") {
+        socket.emit("flag", index);
+      }
+    },
+    onPress: () => {
+      if (state === "unknown") {
+        socket.emit("expose", index);
+      }
+    },
+  });
+
   return (
     <div
+      {...args}
       className={clsx(
         "flex items-center justify-center text-xl font-bold",
         classMap.get(state),
         className,
       )}
-      onClick={() => {
-        if (state === "unknown") {
-          socket.emit("expose", index);
-        }
-      }}
-      onContextMenu={(event) => {
-        event.preventDefault();
-        if (state === "flagged" || state === "unknown") {
-          socket.emit("flag", index);
-        }
-      }}
       {...props}
     >
       {textMap.has(state) ? textMap.get(state) : state}

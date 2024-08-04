@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { ClerkProvider } from "@clerk/nextjs";
 import { GeistSans } from "geist/font/sans";
 import { Header } from "@/components/header";
 import "@/globals.css";
@@ -10,15 +9,13 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
-    <ClerkProvider>
-      <html lang="en">
-        <body className={GeistSans.className}>
-          <main className="flex flex-col items-center px-4">
-            <Header />
-            {props.children}
-          </main>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en">
+      <body className={GeistSans.className}>
+        <main className="flex flex-col items-center px-4">
+          <Header />
+          {props.children}
+        </main>
+      </body>
+    </html>
   );
 }

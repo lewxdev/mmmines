@@ -1,11 +1,5 @@
 "use client";
 
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  SignOutButton,
-} from "@clerk/nextjs";
 import { UsersIcon } from "lucide-react";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
@@ -21,12 +15,6 @@ export function Header() {
     >
       <h1 className="text-4xl">mmmines</h1>
       <div className="flex justify-between">
-        <SignedOut>
-          <SignInButton />
-        </SignedOut>
-        <SignedIn>
-          <SignOutButton />
-        </SignedIn>
         {!!clientsCount && (
           <div className="flex items-center justify-end gap-2">
             <UsersIcon className="h-4 w-4" />

@@ -10,6 +10,7 @@
     "prepare": "husky"
   },
   "dependencies": {
+    "@tanstack/react-virtual": "^3.8.4",
     "clsx": "^2.1.1",
     "esrun": "^3.2.26",
     "geist": "^1.3.1",

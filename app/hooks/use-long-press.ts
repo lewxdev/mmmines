@@ -13,16 +13,19 @@ export function useLongPress({
 }: Options) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleStart = (event: React.TouchEvent) => {
-    event.preventDefault();
+  const handleStart = () => {
     timeoutRef.current = setTimeout(() => {
       onLongPress();
+      navigator.vibrate?.(50);
       timeoutRef.current = null;
     }, threshold);
   };
 
   const handleEnd = (callback?: () => void) => (event: React.TouchEvent) => {
-    event.preventDefault();
+    if (event.cancelable) {
+      // prevent click event if tapped
+      event.preventDefault();
+    }
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
@@ -30,9 +33,18 @@ export function useLongPress({
     }
   };
 
+  const handleRightClick = (event: React.MouseEvent) => {
+    // prevent context menu
+    event.preventDefault();
+    // only trigger with secondary mouse button
+    if (event.button === 2) {
+      onLongPress();
+    }
+  };
+
   return {
     onClick: onPress,
-    onContextMenu: onLongPress,
+    onContextMenu: handleRightClick,
     onTouchStart: handleStart,
     onTouchEnd: handleEnd(onPress),
     onTouchCancel: handleEnd(),

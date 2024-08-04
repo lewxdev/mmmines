@@ -3,17 +3,18 @@ import { socket } from "@/socket";
 import { tw } from "@/utils";
 import type { PlotState } from "@/utils/game";
 
-type Props = {
+type Props = React.HTMLAttributes<HTMLDivElement> & {
   index: number;
   state: PlotState;
 };
 
-export function Plot({ index, state }: Props) {
+export function Plot({ className, index, state, ...props }: Props) {
   return (
     <div
       className={clsx(
         "flex items-center justify-center text-xl font-bold",
         classMap.get(state),
+        className,
       )}
       onClick={() => {
         if (state === "unknown") {
@@ -26,6 +27,7 @@ export function Plot({ index, state }: Props) {
           socket.emit("flag", index);
         }
       }}
+      {...props}
     >
       {textMap.has(state) ? textMap.get(state) : state}
     </div>

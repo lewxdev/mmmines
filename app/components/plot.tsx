@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import clsx from "clsx";
 import { useLongPress } from "@/hooks/use-long-press";
 import { socket } from "@/socket";
@@ -10,27 +11,27 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Plot({ className, index, state, ...props }: Props) {
-  const args = useLongPress({
-    onLongPress: () => {
+  const longPressProps = useLongPress({
+    onLongPress: useCallback(() => {
       if (state === "flagged" || state === "unknown") {
         socket.emit("flag", index);
       }
-    },
-    onPress: () => {
+    }, [index, state]),
+    onPress: useCallback(() => {
       if (state === "unknown") {
         socket.emit("expose", index);
       }
-    },
+    }, [index, state]),
   });
 
   return (
     <div
-      {...args}
       className={clsx(
         "flex items-center justify-center text-xl font-bold",
         classMap.get(state),
         className,
       )}
+      {...longPressProps}
       {...props}
     >
       {textMap.has(state) ? textMap.get(state) : state}

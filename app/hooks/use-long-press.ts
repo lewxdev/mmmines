@@ -1,53 +1,41 @@
-import { useCallback, useRef } from "react";
+import { useRef } from "react";
 
 type Options = {
-  threshold?: number;
   onLongPress: () => void;
   onPress?: () => void;
+  threshold?: number;
 };
 
 export function useLongPress({
-  threshold = 400,
   onLongPress,
   onPress,
+  threshold = 400,
 }: Options) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const handleStart = useCallback(() => {
+  const handleStart = (event: React.TouchEvent) => {
+    event.preventDefault();
     timeoutRef.current = setTimeout(() => {
-      timeoutRef.current = null;
       onLongPress();
+      timeoutRef.current = null;
     }, threshold);
-  }, [onLongPress, threshold]);
+  };
 
-  const handleClear = useCallback(
-    (shouldTrigger: boolean) => () => {
-      const longPressTriggered = timeoutRef.current === null;
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-      if (!longPressTriggered && shouldTrigger && onPress) {
-        onPress();
-      }
-    },
-    [onPress],
-  );
+  const handleEnd = (callback?: () => void) => (event: React.TouchEvent) => {
+    event.preventDefault();
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+      callback?.();
+    }
+  };
 
-  const isTouchDevice =
-    typeof window !== "undefined" && "ontouchstart" in window;
-
-  return isTouchDevice
-    ? {
-        onTouchStart: handleStart,
-        onTouchEnd: handleClear(true),
-        onTouchMove: handleClear(false),
-      }
-    : {
-        onClick: onPress,
-        onContextMenu: (e: React.MouseEvent) => {
-          e.preventDefault();
-          onLongPress();
-        },
-      };
+  return {
+    onClick: onPress,
+    onContextMenu: onLongPress,
+    onTouchStart: handleStart,
+    onTouchEnd: handleEnd(onPress),
+    onTouchCancel: handleEnd(),
+    onTouchMove: handleEnd(),
+  } satisfies React.HTMLAttributes<HTMLElement>;
 }

@@ -8,6 +8,7 @@ export class Field {
     public readonly size: number,
     public readonly mineCount: number,
     private readonly data: number[],
+    private exposedCount = 0,
     public readonly plots: PlotState[] = data.map(getState),
   ) {
     const debouncedEncodeData = _.debounce(redis.encodeData, 1000);
@@ -19,6 +20,12 @@ export class Field {
         return Reflect.set(target, index, value);
       },
     });
+  }
+
+  public get exposedPercent() {
+    return Math.floor(
+      (this.exposedCount / (this.size ** 2 - this.mineCount)) * 100,
+    );
   }
 
   public static async create(size = 10) {
@@ -39,7 +46,11 @@ export class Field {
       const data = await redis.decodeData();
       const size = Math.sqrt(data.length);
       const mineCount = _.sum(data.map(isMine));
-      return new Field(size, mineCount, data);
+      const exposedCount = data.reduce(
+        (count, byte) => (isExposed(byte) && !isMine(byte) ? count + 1 : count),
+        0,
+      );
+      return new Field(size, mineCount, data, exposedCount);
     } catch {
       return Field.create();
     }
@@ -49,6 +60,9 @@ export class Field {
     if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
       // set exposed state bit, unset the flagged state bit
       this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);
+      if (!isMine(this.data[index])) {
+        this.exposedCount++;
+      }
       if (getValue(this.data[index]) === 0) {
         getOffsets(this.size, index).forEach(this.exposeCell.bind(this));
       }

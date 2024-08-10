@@ -23,11 +23,13 @@ async function main() {
   io.on("connection", (socket) => {
     clientsCount++;
     io.emit("clientsCount", clientsCount);
+    io.emit("exposedPercent", field.exposedPercent);
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
       field.exposeCell(index);
       field = await field.handleComplete();
+      io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);
     });
 

@@ -28,7 +28,7 @@ export function Header() {
           <div className="flex items-center justify-end gap-2">
             {!!exposedPercent && (
               <>
-                <span className="">{exposedPercent}</span>
+                <span>{exposedPercent}</span>
                 <Percent className="h-4 w-4" />
               </>
             )}

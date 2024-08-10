@@ -44,7 +44,7 @@ export function Field() {
             gridTemplateColumns: `repeat(3, ${GRID_SIZE}rem)`,
           }}
         >
-          {Array.from({ length: 9 }).map((_, index) => (
+          {Array.from({ length: 9 }, (_, index) => (
             <div
               key={index}
               className="bg-gray-100"

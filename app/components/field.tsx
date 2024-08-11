@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Fade } from "@/components/fade";
 import { HEADER_HEIGHT } from "@/components/header";
 import { Plot } from "@/components/plot";
 import { useSocket } from "@/hooks/use-socket";
@@ -19,8 +20,8 @@ export function Field() {
   const rowVirtualizer = useVirtualizer({
     count: size,
     gap: GAP_SIZE * 16,
-    getScrollElement: () => parentRef.current,
     estimateSize: () => GRID_SIZE * 16,
+    getScrollElement: () => parentRef.current,
   });
   const columnVirtualizer = useVirtualizer({
     ...rowVirtualizer.options,
@@ -49,22 +50,23 @@ export function Field() {
           width: columnVirtualizer.getTotalSize(),
         }}
       >
-        {rowVirtualizer.getVirtualItems().map((virtualRow) =>
+        {rowVirtualizer.getVirtualItems().flatMap((virtualRow) =>
           columnVirtualizer.getVirtualItems().map((virtualColumn) => {
             const index = virtualRow.index * size + virtualColumn.index;
             return (
-              <Plot
-                index={index}
-                state={plots[index]!}
-                // todo: add room/mode to key
-                key={`${plots.length}:${index}`}
-                className="absolute top-0 left-0"
-                style={{
-                  width: virtualColumn.size,
-                  height: virtualRow.size,
-                  transform: `translateX(${virtualColumn.start}px) translateY(${virtualRow.start}px)`,
-                }}
-              />
+              // todo: add room/mode to key
+              <Fade key={`${size}:${index}`}>
+                <Plot
+                  className="absolute top-0 left-0"
+                  index={index}
+                  state={plots[index]!}
+                  style={{
+                    height: virtualRow.size,
+                    width: virtualColumn.size,
+                    transform: `translateX(${virtualColumn.start}px) translateY(${virtualRow.start}px)`,
+                  }}
+                />
+              </Fade>
             );
           }),
         )}

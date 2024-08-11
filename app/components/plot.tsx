@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import clsx from "clsx";
+import clsx from "clsx/lite";
 import { useLongPress } from "@/hooks/use-long-press";
 import { socket } from "@/socket";
 import { tw } from "@/utils";

@@ -23,13 +23,13 @@ export function Header() {
               <UsersIcon className="h-4 w-4" />
             </div>
           )}
+          {!!exposedPercent && (
+            <div className="flex items-center justify-end gap-2">
+              <span>{exposedPercent}</span>
+              <Percent className="h-4 w-4" />
+            </div>
+          )}
         </div>
-        {!!exposedPercent && (
-          <div className="flex items-center justify-end gap-2">
-            <span>{exposedPercent}</span>
-            <Percent className="h-4 w-4" />
-          </div>
-        )}
       </div>
     </header>
   );

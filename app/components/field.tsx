@@ -39,7 +39,7 @@ export function Field() {
   }, [size]);
 
   return !plots ? (
-    <div className="absolute bg-white h-[100dvh] w-[100-dvw] z-10">
+    <div className="absolute bg-white h-[100dvh] w-[100dvw] z-10">
       <div className="h-full flex items-center justify-center">
         <div
           className="grid animate-pulse"

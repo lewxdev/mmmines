@@ -35,7 +35,7 @@ export function Field() {
   }, [size]);
 
   return !plots ? (
-    <div className="absolute bg-white h-full w-full left-0 right-0">
+    <div className="absolute bg-white h-[100dvh] w-[100-dvw] z-10">
       <div className="h-full flex items-center justify-center">
         <div
           style={{

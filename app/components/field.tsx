@@ -38,8 +38,27 @@ export function Field() {
     );
   }, [size]);
 
-  // todo: add skeleton loader
-  return !plots ? null : (
+  return !plots ? (
+    <div className="absolute bg-white h-[100dvh] w-[100-dvw] z-10">
+      <div className="h-full flex items-center justify-center">
+        <div
+          className="grid animate-pulse"
+          style={{
+            gap: `${GAP_SIZE}rem`,
+            gridTemplateColumns: `repeat(3, ${GRID_SIZE}rem)`,
+          }}
+        >
+          {Array.from({ length: 9 }, (_, index) => (
+            <div
+              key={index}
+              className="bg-gray-100"
+              style={{ height: `${GRID_SIZE}rem`, width: `${GRID_SIZE}rem` }}
+            />
+          ))}
+        </div>
+      </div>
+    </div>
+  ) : (
     <div
       className="max-w-full select-none overflow-auto bg-white"
       onContextMenu={(event) => event.preventDefault()}

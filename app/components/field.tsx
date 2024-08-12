@@ -38,14 +38,13 @@ export function Field() {
     <div className="absolute bg-white h-[100dvh] w-[100-dvw] z-10">
       <div className="h-full flex items-center justify-center">
         <div
+          className="grid animate-pulse"
           style={{
-            display: "grid",
             gap: `${GAP_SIZE}rem`,
             gridTemplateColumns: `repeat(3, ${GRID_SIZE}rem)`,
           }}
-          className="animate-pulse"
         >
-          {Array.from({ length: 9 }).map((_, index) => (
+          {Array.from({ length: 9 }, (_, index) => (
             <div
               key={index}
               className="bg-gray-100"

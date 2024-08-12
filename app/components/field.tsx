@@ -24,7 +24,10 @@ export function Field() {
     getScrollElement: () => parentRef.current,
   });
   const columnVirtualizer = useVirtualizer({
-    ...rowVirtualizer.options,
+    count: size,
+    gap: GAP_SIZE * 16,
+    estimateSize: () => GRID_SIZE * 16,
+    getScrollElement: () => parentRef.current,
     horizontal: true,
   });
 

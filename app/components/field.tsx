@@ -52,19 +52,17 @@ export function Field() {
       >
         {rowVirtualizer.getVirtualItems().flatMap((virtualRow) =>
           columnVirtualizer.getVirtualItems().map((virtualColumn) => {
-            const index = virtualRow.index * size + virtualColumn.index;
+            const { index: y, size: height, start: top } = virtualRow;
+            const { index: x, size: width, start: left } = virtualColumn;
+            const index = y * size + x;
             return (
               // todo: add room/mode to key
               <Fade key={`${size}:${index}`}>
                 <Plot
-                  className="absolute top-0 left-0"
+                  className="absolute"
                   index={index}
                   state={plots[index]!}
-                  style={{
-                    height: virtualRow.size,
-                    width: virtualColumn.size,
-                    transform: `translateX(${virtualColumn.start}px) translateY(${virtualRow.start}px)`,
-                  }}
+                  style={{ height, width, top, left }}
                 />
               </Fade>
             );

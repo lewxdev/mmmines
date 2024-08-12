@@ -17,22 +17,19 @@ export function Header() {
       <div className="flex justify-between">
         <h1 className="text-4xl">mmmines</h1>
         <div className="flex flex-col items-end gap-2">
-          <div className="flex items-center gap-2">
-            {!!clientsCount && (
-              <>
-                <span>{clientsCount}</span>
-                <UsersIcon className="h-4 w-4" />
-              </>
-            )}
+          {!!clientsCount && (
+            <div className="flex items-center gap-2">
+              <span>{clientsCount}</span>
+              <UsersIcon className="h-4 w-4" />
+            </div>
+          )}
           </div>
-          <div className="flex items-center justify-end gap-2">
-            {!!exposedPercent && (
-              <>
-                <span>{exposedPercent}</span>
-                <Percent className="h-4 w-4" />
-              </>
-            )}
-          </div>
+          {!!exposedPercent && (
+            <div className="flex items-center justify-end gap-2">
+              <span>{exposedPercent}</span>
+              <Percent className="h-4 w-4" />
+            </div>
+          )}
         </div>
       </div>
     </header>

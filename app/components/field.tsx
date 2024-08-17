@@ -3,13 +3,13 @@
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Fade } from "@/components/fade";
-import { HEADER_HEIGHT } from "@/components/header";
 import { Plot } from "@/components/plot";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
 const GRID_SIZE = 2;
 const GAP_SIZE = GRID_SIZE * 0.125;
+const PX_PER_REM = 16;
 
 export function Field() {
   useSocket();
@@ -19,16 +19,19 @@ export function Field() {
   const parentRef = useRef<HTMLDivElement>(null);
   const rowVirtualizer = useVirtualizer({
     count: size,
-    gap: GAP_SIZE * 16,
-    estimateSize: () => GRID_SIZE * 16,
+    gap: GAP_SIZE * PX_PER_REM,
+    paddingEnd: PX_PER_REM,
+    estimateSize: () => GRID_SIZE * PX_PER_REM,
     getScrollElement: () => parentRef.current,
   });
   const columnVirtualizer = useVirtualizer({
     count: size,
-    gap: GAP_SIZE * 16,
-    estimateSize: () => GRID_SIZE * 16,
-    getScrollElement: () => parentRef.current,
+    gap: GAP_SIZE * PX_PER_REM,
     horizontal: true,
+    paddingStart: PX_PER_REM,
+    paddingEnd: PX_PER_REM,
+    estimateSize: () => GRID_SIZE * PX_PER_REM,
+    getScrollElement: () => parentRef.current,
   });
 
   useEffect(() => {
@@ -60,10 +63,9 @@ export function Field() {
     </div>
   ) : (
     <div
-      className="max-w-full select-none overflow-auto bg-white"
+      className="max-w-full select-none overflow-auto bg-white flex-1"
       onContextMenu={(event) => event.preventDefault()}
       ref={parentRef}
-      style={{ maxHeight: `calc(100dvh - ${HEADER_HEIGHT}px)` }}
     >
       <div
         className="relative"

@@ -11,7 +11,7 @@ export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
     <html lang="en">
       <body className={GeistSans.className}>
-        <main className="flex flex-col items-center px-4">
+        <main className="flex flex-col items-center h-[100dvh]">
           <Header />
           {props.children}
         </main>

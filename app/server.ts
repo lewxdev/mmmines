@@ -3,18 +3,12 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import { createSessionStore } from "@/stores/sessionStore";
-import type {
-  ClientToServerEvents,
-  ServerToClientEvents,
-  SocketData,
-} from "@/types";
+import type { SocketServer } from "@/types";
 import { Field } from "@/utils/game";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-
-const randomId = () => crypto.randomBytes(8).toString("hex");
 
 const sessionStore = createSessionStore();
 
@@ -23,9 +17,7 @@ async function main() {
   await app.prepare();
 
   const httpServer = createServer(app.getRequestHandler());
-  const io = new Server<ClientToServerEvents, ServerToClientEvents, SocketData>(
-    httpServer,
-  );
+  const io: SocketServer = new Server(httpServer);
 
   let clientsCount = 0;
 
@@ -38,7 +30,6 @@ async function main() {
       const session = sessionStore.getSession(sessionID);
       if (session) {
         socket.data.sessionID = sessionID;
-        socket.data.userID = session.userID;
         socket.data.username = session.username;
         return next();
       }
@@ -48,23 +39,18 @@ async function main() {
       return next(new Error("invalid username"));
     }
 
-    socket.data.sessionID = randomId();
-    socket.data.userID = randomId();
+    socket.data.sessionID = crypto.randomBytes(8).toString("hex");
     socket.data.username = username;
     next();
   });
 
   io.on("connection", (socket) => {
     sessionStore.setSession(socket.data.sessionID, {
-      userID: socket.data.userID,
       username: socket.data.username,
       connected: true,
     });
 
-    socket.emit("session", {
-      sessionID: socket.data.sessionID,
-      userID: socket.data.userID,
-    });
+    socket.emit("session", socket.data.sessionID);
 
     clientsCount++;
     io.emit("clientsCount", clientsCount);
@@ -88,7 +74,6 @@ async function main() {
       clientsCount--;
       io.emit("clientsCount", clientsCount);
       sessionStore.setSession(socket.data.sessionID, {
-        userID: socket.data.userID,
         username: socket.data.username,
         connected: false,
       });

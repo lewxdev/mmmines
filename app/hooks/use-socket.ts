@@ -28,11 +28,9 @@ export function useSocket() {
     // socket.on("connect", onConnect);
     socket.on("disconnect", onDisconnect);
 
-    socket.on("session", ({ sessionID, userID }) => {
+    socket.on("session", (sessionID) => {
       socket.auth = { sessionID };
       localStorage.setItem("sessionID", sessionID);
-      // @ts-ignore
-      socket.userID = userID;
     });
 
     return () => {

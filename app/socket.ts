@@ -1,8 +1,6 @@
 "use client";
 
-import { io, Socket } from "socket.io-client";
-import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
+import { io } from "socket.io-client";
+import type { SocketClient } from "@/types";
 
-export const socket: Socket<ServerToClientEvents, ClientToServerEvents> = io({
-  autoConnect: false,
-});
+export const socket: SocketClient = io({ autoConnect: false });

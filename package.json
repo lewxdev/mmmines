@@ -21,7 +21,8 @@
     "react": "^18",
     "react-dom": "^18",
     "socket.io": "^4.7.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "zoo-ids": "2.0.6"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.3.0",

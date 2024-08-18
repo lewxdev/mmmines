@@ -2,15 +2,13 @@ import crypto from "crypto";
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
-import { createSessionStore } from "@/stores/sessionStore";
 import type { SocketServer } from "@/types";
 import { Field } from "@/utils/game";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-
-const sessionStore = createSessionStore();
+const sessions = new Set<string>();
 
 async function main() {
   const app = next({ dev, hostname, port });
@@ -27,30 +25,23 @@ async function main() {
   io.use(async (socket, next) => {
     const { sessionID } = socket.handshake.auth;
     if (sessionID) {
-      const session = sessionStore.getSession(sessionID);
-      if (session) {
-        socket.data.sessionID = sessionID;
-        socket.data.username = session.username;
-        return next();
+      if (!sessions.has(sessionID)) {
+        return next(new Error("invalid session"));
       }
-    }
-    const { username } = socket.handshake.auth;
-    if (!username) {
-      return next(new Error("invalid username"));
+      socket.data.sessionID = sessionID;
+      return next();
     }
 
     socket.data.sessionID = crypto.randomBytes(8).toString("hex");
-    socket.data.username = username;
     next();
   });
 
   io.on("connection", (socket) => {
-    sessionStore.setSession(socket.data.sessionID, {
-      username: socket.data.username,
-      connected: true,
-    });
+    sessions.add(socket.data.sessionID);
 
-    socket.emit("session", socket.data.sessionID);
+    socket.emit("session", {
+      sessionID: socket.data.sessionID,
+    });
 
     clientsCount++;
     io.emit("clientsCount", clientsCount);
@@ -73,10 +64,6 @@ async function main() {
     socket.on("disconnect", () => {
       clientsCount--;
       io.emit("clientsCount", clientsCount);
-      sessionStore.setSession(socket.data.sessionID, {
-        username: socket.data.username,
-        connected: false,
-      });
     });
   });
 

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import clsx from "clsx/lite";
+import { useSocket } from "@/components/socket-provider";
 import { useLongPress } from "@/hooks/use-long-press";
-import { socket } from "@/socket";
 import { tw } from "@/utils";
 import type { PlotState } from "@/utils/game";
 
@@ -11,17 +11,19 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 };
 
 export function Plot({ className, index, state, ...props }: Props) {
+  const { socket } = useSocket();
+
   const longPressProps = useLongPress({
     onLongPress: useCallback(() => {
       if (state === "flagged" || state === "unknown") {
         socket.emit("flag", index);
       }
-    }, [index, state]),
+    }, [index, state, socket]),
     onPress: useCallback(() => {
       if (state === "unknown") {
         socket.emit("expose", index);
       }
-    }, [index, state]),
+    }, [index, state, socket]),
   });
 
   return (

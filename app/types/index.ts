@@ -6,7 +6,7 @@ export type ServerToClientEvents = {
   update(state: Field["plots"]): void;
   clientsCount(count: number): void;
   exposedPercent(count: number): void;
-  session: (sessionID: string) => void;
+  session: ({ sessionID }: { sessionID: string }) => void;
 };
 
 type ClientToServerEvents = {
@@ -16,7 +16,6 @@ type ClientToServerEvents = {
 
 type SocketData = {
   sessionID: string;
-  username: string;
 };
 
 type DefaultEventsMap = {

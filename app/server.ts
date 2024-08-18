@@ -4,11 +4,11 @@ import next from "next";
 import { Server } from "socket.io";
 import type { SocketServer } from "@/types";
 import { Field } from "@/utils/game";
+import * as redis from "@/utils/redis";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-const sessions = new Map<string, "alive" | "dead">();
 
 async function main() {
   const app = next({ dev, hostname, port });
@@ -24,8 +24,8 @@ async function main() {
 
   io.use(async (socket, next) => {
     const { sessionId } = socket.handshake.auth;
-    const sessionState = sessions.get(sessionId);
-    if (sessions.get(sessionId) === "dead") {
+    const sessionState = await redis.getSession(sessionId);
+    if (sessionState === "dead") {
       return next(new Error("dead"));
     }
     socket.data.sessionId = sessionState
@@ -34,8 +34,8 @@ async function main() {
     next();
   });
 
-  io.on("connection", (socket) => {
-    sessions.set(socket.data.sessionId, "alive");
+  io.on("connection", async (socket) => {
+    await redis.startSession(socket.data.sessionId);
     socket.emit("sessionAlive", socket.data.sessionId);
 
     clientsCount++;
@@ -45,7 +45,7 @@ async function main() {
 
     socket.on("expose", async (index) => {
       if (field.exposeCell(index) === "dead") {
-        sessions.set(socket.data.sessionId, "dead");
+        await redis.killSession(socket.data.sessionId);
         socket.emit("sessionDead");
       } else {
         field = await field.handleComplete();

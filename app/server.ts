@@ -24,7 +24,7 @@ async function main() {
 
   io.use(async (socket, next) => {
     const { sessionID } = socket.handshake.auth;
-    if (sessionID) {
+    if (sessionID && sessions.has(sessionID)) {
       if (sessions.get(sessionID) === "dead") {
         return next(new Error("dead"));
       }

@@ -44,6 +44,10 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
       }
     });
 
+    socket.on("death", () => {
+      setIsDead(true);
+    });
+
     return () => {
       socket.off("disconnect", onDisconnect);
     };

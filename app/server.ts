@@ -49,7 +49,11 @@ async function main() {
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
-      field.exposeCell(index);
+      const newSessionValue = field.exposeCell(index);
+      if (newSessionValue === "dead") {
+        sessions.set(socket.data.sessionID, "dead");
+        socket.emit("death");
+      }
       field = await field.handleComplete();
       io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);

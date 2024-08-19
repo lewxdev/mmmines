@@ -7,6 +7,7 @@ export type ServerToClientEvents = {
   clientsCount(count: number): void;
   exposedPercent(count: number): void;
   session: ({ sessionID }: { sessionID: string }) => void;
+  death(): void;
 };
 
 type ClientToServerEvents = {

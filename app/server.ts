@@ -8,7 +8,7 @@ import { Field } from "@/utils/game";
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
-const sessions = new Set<string>();
+const sessions = new Map<string, "alive" | "dead">();
 
 async function main() {
   const app = next({ dev, hostname, port });
@@ -25,8 +25,8 @@ async function main() {
   io.use(async (socket, next) => {
     const { sessionID } = socket.handshake.auth;
     if (sessionID) {
-      if (!sessions.has(sessionID)) {
-        return next(new Error("invalid session"));
+      if (sessions.get(sessionID) === "dead") {
+        return next(new Error("dead"));
       }
       socket.data.sessionID = sessionID;
       return next();
@@ -37,7 +37,7 @@ async function main() {
   });
 
   io.on("connection", (socket) => {
-    sessions.add(socket.data.sessionID);
+    sessions.set(socket.data.sessionID, "alive");
 
     socket.emit("session", {
       sessionID: socket.data.sessionID,

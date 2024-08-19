@@ -39,7 +39,7 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
     });
 
     socket.on("connect_error", (error) => {
-      if (error.message === "invalid session") {
+      if (error.message === "dead") {
         setIsDead(true);
       }
     });

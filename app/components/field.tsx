@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Fade } from "@/components/fade";
 import { Plot } from "@/components/plot";
+import { TutorialDialog } from "@/components/tutorial-dialog";
 import { useSocket } from "@/hooks/use-socket";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
@@ -93,6 +94,7 @@ export function Field() {
           }),
         )}
       </div>
+      <TutorialDialog />
     </div>
   );
 }

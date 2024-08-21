@@ -18,9 +18,7 @@ async function main() {
   const io: SocketServer = new Server(httpServer);
 
   let clientsCount = 0;
-
   let field = await Field.fromRedis();
-  field = await field.handleComplete();
 
   io.use(async (socket, next) => {
     const { sessionId } = socket.handshake.auth;
@@ -47,16 +45,16 @@ async function main() {
       if (field.exposeCell(index) === "dead") {
         await redis.setSession(socket.data.sessionId, "dead");
         socket.emit("sessionDead");
-      } else {
-        field = await field.handleComplete();
-        io.emit("exposedPercent", field.exposedPercent);
+      } else if (field.isComplete) {
+        field = await Field.create(field.size + 10);
+        await redis.resetSessions();
       }
+      io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);
     });
 
     socket.on("flag", async (index) => {
       field.flagCell(index);
-      field = await field.handleComplete();
       io.emit("update", field.plots);
     });
 

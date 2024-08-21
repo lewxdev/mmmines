@@ -29,6 +29,10 @@ export class Field {
     );
   }
 
+  public get isComplete() {
+    return this.data.every((byte) => isExposed(byte) || isMine(byte));
+  }
+
   public static async create(size = 10) {
     const area = size ** 2;
     const mineCount = Math.round(area * 0.15);
@@ -77,12 +81,6 @@ export class Field {
       // toggle the flagged state bit
       this.data[index] ^= 1 << 4;
     }
-  }
-
-  public async handleComplete() {
-    return this.data.every((byte) => isExposed(byte) || isMine(byte))
-      ? await Field.create(this.size + 10)
-      : this;
   }
 }
 

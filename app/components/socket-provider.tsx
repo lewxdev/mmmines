@@ -34,15 +34,12 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
       }
     });
 
-    socket.on("sessionAlive", (sessionId) => {
+    socket.on("session", (sessionId) => {
       socket.auth = { sessionId };
       localStorage.setItem("sessionId", sessionId);
-      setSessionState("alive");
     });
 
-    socket.on("sessionDead", () => {
-      setSessionState("dead");
-    });
+    socket.on("sessionState", setSessionState);
   }, []);
 
   return (

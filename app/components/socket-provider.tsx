@@ -9,6 +9,7 @@ const socket: SocketClient = io({ autoConnect: false });
 type SocketContextValue = {
   socket: SocketClient;
   sessionState: SessionState | null;
+  showTutorial: boolean;
 };
 
 const SocketContext = createContext<SocketContextValue | null>(null);
@@ -23,9 +24,13 @@ export function useSocket() {
 
 export function SocketProvider({ children }: React.PropsWithChildren) {
   const [sessionState, setSessionState] = useState<SessionState | null>(null);
+  const [showTutorial, setShowTutorial] = useState(true);
 
   useEffect(() => {
-    socket.auth = { sessionId: localStorage.getItem("sessionId") };
+    if (localStorage.getItem("sessionId")) {
+      socket.auth = { sessionId: localStorage.getItem("sessionId") };
+      setShowTutorial(false);
+    }
     socket.connect();
 
     socket.on("connect_error", (error) => {
@@ -43,7 +48,7 @@ export function SocketProvider({ children }: React.PropsWithChildren) {
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, sessionState }}>
+    <SocketContext.Provider value={{ socket, sessionState, showTutorial }}>
       {children}
     </SocketContext.Provider>
   );

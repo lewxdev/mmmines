@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
   BombIcon,
   FlagIcon,
@@ -6,19 +6,18 @@ import {
   MousePointerClick,
   UsersIcon,
 } from "lucide-react";
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/dialog";
+} from "@/components/ui/dialog";
 
 const steps = [
   {
-    title: "Massive Multiplayer Minesweeper",
+    title: "Massive Multiplayer Mines",
     description:
       "Work together in real time to clear the grid and avoid the mines!",
     icon: <UsersIcon className="w-12 h-12 mb-4 text-primary" />,
@@ -32,19 +31,19 @@ const steps = [
   {
     title: "Left-Click to Reveal",
     description:
-      "Left-click on a square to reveal what's underneath. If it's a mine, you lose! If it's safe, you'll see a number indicating how many mines are in the adjacent squares.",
+      "Left-click on a square to reveal what's underneath. If it's a mine, you lose!",
     icon: <MousePointerClick className="w-12 h-12 mb-4 text-primary" />,
   },
   {
     title: "Right-Click to Flag",
     description:
-      "If you suspect a square contains a mine, right-click to place a flag on it. This helps you keep track of potential mine locations.",
+      "Right-click to place a flag on a square to keep track of potential mine locations.",
     icon: <FlagIcon className="w-12 h-12 mb-4 text-primary" />,
   },
   {
-    title: "Win the Game",
+    title: "Hardcore",
     description:
-      "To win, reveal all safe squares without clicking on any mines. Use the numbers as clues to deduce where the mines are located.",
+      "Click a mine, and you're out until all squares are revealed and a new game starts with an even larger grid.",
     icon: <BombIcon className="w-12 h-12 mb-4 text-primary" />,
   },
 ];
@@ -53,13 +52,6 @@ export function TutorialDialog() {
   const [step, setStep] = useState(1);
   const [open, setOpen] = useState(true);
   const totalSteps = steps.length;
-
-  useEffect(() => {
-    if (!open) {
-      setStep(1);
-    }
-  }, [open]);
-
   const currentStep = steps[step - 1];
 
   const handleNext = () => {
@@ -72,12 +64,9 @@ export function TutorialDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen} defaultOpen>
-      <DialogContent className="sm:max-w-[425px] bg-white">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>How to Play Minesweeper</DialogTitle>
-          <DialogDescription>
-            Learn the basics of Minesweeper in just a few steps!
-          </DialogDescription>
+          <DialogTitle>How to Play</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center text-center py-4">
           {currentStep?.icon}

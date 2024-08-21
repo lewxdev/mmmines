@@ -14,7 +14,7 @@ const GAP_SIZE = GRID_SIZE * 0.125;
 const PX_PER_REM = 16;
 
 export function Field() {
-  const { sessionState } = useSocket();
+  const { sessionState, showTutorial } = useSocket();
   const [plots] = useSocketEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
 
@@ -99,7 +99,7 @@ export function Field() {
           }),
         )}
       </div>
-      <TutorialDialog />
+      {showTutorial && <TutorialDialog />}
     </div>
   );
 }

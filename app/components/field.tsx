@@ -2,10 +2,11 @@
 
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
+import { Skull } from "lucide-react";
 import { Fade } from "@/components/fade";
 import { Plot } from "@/components/plot";
+import { useSocket } from "@/components/socket-provider";
 import { TutorialDialog } from "@/components/tutorial-dialog";
-import { useSocket } from "@/hooks/use-socket";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
 const GRID_SIZE = 2;
@@ -13,7 +14,7 @@ const GAP_SIZE = GRID_SIZE * 0.125;
 const PX_PER_REM = 16;
 
 export function Field() {
-  useSocket();
+  const { sessionState } = useSocket();
   const [plots] = useSocketEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
 
@@ -42,24 +43,28 @@ export function Field() {
     );
   }, [size]);
 
-  return !plots ? (
+  return !plots || sessionState === "dead" ? (
     <div className="absolute bg-white h-[100dvh] w-[100dvw] z-10">
       <div className="h-full flex items-center justify-center">
-        <div
-          className="grid animate-pulse"
-          style={{
-            gap: `${GAP_SIZE}rem`,
-            gridTemplateColumns: `repeat(3, ${GRID_SIZE}rem)`,
-          }}
-        >
-          {Array.from({ length: 9 }, (_, index) => (
-            <div
-              key={index}
-              className="bg-gray-100"
-              style={{ height: `${GRID_SIZE}rem`, width: `${GRID_SIZE}rem` }}
-            />
-          ))}
-        </div>
+        {sessionState === "dead" ? (
+          <Skull className="h-16 w-16 text-red-600" />
+        ) : (
+          <div
+            className="grid animate-pulse"
+            style={{
+              gap: `${GAP_SIZE}rem`,
+              gridTemplateColumns: `repeat(3, ${GRID_SIZE}rem)`,
+            }}
+          >
+            {Array.from({ length: 9 }, (_, index) => (
+              <div
+                key={index}
+                className="bg-gray-100"
+                style={{ height: `${GRID_SIZE}rem`, width: `${GRID_SIZE}rem` }}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   ) : (

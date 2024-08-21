@@ -1,8 +1,10 @@
+import crypto from "crypto";
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
-import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
+import type { SocketServer } from "@/types";
 import { Field } from "@/utils/game";
+import * as redis from "@/utils/redis";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
@@ -13,29 +15,54 @@ async function main() {
   await app.prepare();
 
   const httpServer = createServer(app.getRequestHandler());
-  const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
+  const io: SocketServer = new Server(httpServer);
 
   let clientsCount = 0;
-
   let field = await Field.fromRedis();
-  field = await field.handleComplete();
 
-  io.on("connection", (socket) => {
+  io.use(async (socket, next) => {
+    const { sessionId } = socket.handshake.auth;
+    const sessionState = await redis.getSession(sessionId);
+    if (sessionState === "dead") {
+      return next(new Error("dead"));
+    }
+    socket.data.sessionId = sessionState
+      ? sessionId
+      : crypto.randomBytes(8).toString("hex");
+    next();
+  });
+
+  io.on("connection", async (socket) => {
+    if (field.isComplete) {
+      field = await Field.create(field.size + 10);
+      await redis.resetSessions();
+      io.emit("sessionState", "alive");
+    }
+
+    await redis.setSession(socket.data.sessionId, "alive");
+    socket.emit("session", socket.data.sessionId);
+    socket.emit("sessionState", "alive");
+
     clientsCount++;
     io.emit("clientsCount", clientsCount);
     io.emit("exposedPercent", field.exposedPercent);
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
-      field.exposeCell(index);
-      field = await field.handleComplete();
+      if (field.exposeCell(index) === "dead") {
+        await redis.setSession(socket.data.sessionId, "dead");
+        socket.emit("sessionState", "dead");
+      } else if (field.isComplete) {
+        field = await Field.create(field.size + 10);
+        await redis.resetSessions();
+        io.emit("sessionState", "alive");
+      }
       io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);
     });
 
     socket.on("flag", async (index) => {
       field.flagCell(index);
-      field = await field.handleComplete();
       io.emit("update", field.plots);
     });
 

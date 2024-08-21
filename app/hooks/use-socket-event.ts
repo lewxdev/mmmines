@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { socket } from "@/socket";
+import { useSocket } from "@/components/socket-provider";
 import type { ServerToClientEvents } from "@/types";
 
 export function useSocketEvent<K extends keyof ServerToClientEvents>(event: K) {
+  const { socket } = useSocket();
   const [result, setResult] = useState<
     Parameters<ServerToClientEvents[K]> | []
   >([]);
@@ -16,7 +17,7 @@ export function useSocketEvent<K extends keyof ServerToClientEvents>(event: K) {
     return () => {
       socket.off(event, callback);
     };
-  }, [event]);
+  }, [event, socket]);
 
   return result;
 }

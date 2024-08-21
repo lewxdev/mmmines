@@ -1,4 +1,5 @@
 import _ from "lodash";
+import type { SessionState } from "@/types";
 import * as redis from "@/utils/redis";
 
 export type PlotState = number | "mine" | "unknown" | "flagged";
@@ -26,6 +27,10 @@ export class Field {
     return Math.floor(
       (this.exposedCount / (this.size ** 2 - this.mineCount)) * 100,
     );
+  }
+
+  public get isComplete() {
+    return this.data.every((byte) => isExposed(byte) || isMine(byte));
   }
 
   public static async create(size = 10) {
@@ -56,17 +61,19 @@ export class Field {
     }
   }
 
-  public exposeCell(index: number) {
+  public exposeCell(index: number): SessionState {
     if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
       // set exposed state bit, unset the flagged state bit
       this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);
-      if (!isMine(this.data[index])) {
-        this.exposedCount++;
+      if (isMine(this.data[index])) {
+        return "dead";
       }
+      this.exposedCount++;
       if (getValue(this.data[index]) === 0) {
         getOffsets(this.size, index).forEach(this.exposeCell.bind(this));
       }
     }
+    return "alive";
   }
 
   public flagCell(index: number) {
@@ -74,12 +81,6 @@ export class Field {
       // toggle the flagged state bit
       this.data[index] ^= 1 << 4;
     }
-  }
-
-  public async handleComplete() {
-    return this.data.every((byte) => isExposed(byte) || isMine(byte))
-      ? await Field.create(this.size + 10)
-      : this;
   }
 }
 

@@ -33,8 +33,15 @@ async function main() {
   });
 
   io.on("connection", async (socket) => {
+    if (field.isComplete) {
+      field = await Field.create(field.size + 10);
+      await redis.resetSessions();
+      io.emit("sessionState", "alive");
+    }
+
     await redis.setSession(socket.data.sessionId, "alive");
-    socket.emit("sessionAlive", socket.data.sessionId);
+    socket.emit("session", socket.data.sessionId);
+    socket.emit("sessionState", "alive");
 
     clientsCount++;
     io.emit("clientsCount", clientsCount);
@@ -44,10 +51,11 @@ async function main() {
     socket.on("expose", async (index) => {
       if (field.exposeCell(index) === "dead") {
         await redis.setSession(socket.data.sessionId, "dead");
-        socket.emit("sessionDead");
+        socket.emit("sessionState", "dead");
       } else if (field.isComplete) {
         field = await Field.create(field.size + 10);
         await redis.resetSessions();
+        io.emit("sessionState", "alive");
       }
       io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);

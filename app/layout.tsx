@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { Header } from "@/components/header";
-import "@/globals.css";
 import { SocketProvider } from "@/components/socket-provider";
+import "@/globals.css";
 
 export const metadata: Metadata = {
   title: "mmmines",

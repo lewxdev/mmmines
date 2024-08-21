@@ -12,7 +12,6 @@ type Props = React.HTMLAttributes<HTMLDivElement> & {
 
 export function Plot({ className, index, state, ...props }: Props) {
   const { socket } = useSocket();
-
   const longPressProps = useLongPress({
     onLongPress: useCallback(() => {
       if (state === "flagged" || state === "unknown") {

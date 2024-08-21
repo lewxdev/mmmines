@@ -23,25 +23,20 @@ async function main() {
   field = await field.handleComplete();
 
   io.use(async (socket, next) => {
-    const { sessionID } = socket.handshake.auth;
-    if (sessionID && sessions.has(sessionID)) {
-      if (sessions.get(sessionID) === "dead") {
-        return next(new Error("dead"));
-      }
-      socket.data.sessionID = sessionID;
-      return next();
+    const { sessionId } = socket.handshake.auth;
+    const sessionState = sessions.get(sessionId);
+    if (sessions.get(sessionId) === "dead") {
+      return next(new Error("dead"));
     }
-
-    socket.data.sessionID = crypto.randomBytes(8).toString("hex");
+    socket.data.sessionId = sessionState
+      ? sessionId
+      : crypto.randomBytes(8).toString("hex");
     next();
   });
 
   io.on("connection", (socket) => {
-    sessions.set(socket.data.sessionID, "alive");
-
-    socket.emit("session", {
-      sessionID: socket.data.sessionID,
-    });
+    sessions.set(socket.data.sessionId, "alive");
+    socket.emit("sessionAlive", socket.data.sessionId);
 
     clientsCount++;
     io.emit("clientsCount", clientsCount);
@@ -49,13 +44,13 @@ async function main() {
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
-      const newSessionValue = field.exposeCell(index);
-      if (newSessionValue === "dead") {
-        sessions.set(socket.data.sessionID, "dead");
-        socket.emit("death");
+      if (field.exposeCell(index) === "dead") {
+        sessions.set(socket.data.sessionId, "dead");
+        socket.emit("sessionDead");
+      } else {
+        field = await field.handleComplete();
+        io.emit("exposedPercent", field.exposedPercent);
       }
-      field = await field.handleComplete();
-      io.emit("exposedPercent", field.exposedPercent);
       io.emit("update", field.plots);
     });
 

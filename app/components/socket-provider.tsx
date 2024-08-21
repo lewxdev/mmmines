@@ -6,55 +6,49 @@ import type { SocketClient } from "@/types";
 
 const socket: SocketClient = io({ autoConnect: false });
 
-const SocketContext = createContext({
-  socket,
-  isDead: false,
-});
+type SocketContextValue = {
+  socket: SocketClient;
+  sessionState: "alive" | "dead" | null;
+};
+
+const SocketContext = createContext<SocketContextValue | null>(null);
 
 export function useSocket() {
-  return useContext(SocketContext);
+  const socketContext = useContext(SocketContext);
+  if (!socketContext) {
+    throw new Error("useSocket has to be used in SocketProvider");
+  }
+  return socketContext;
 }
 
 export function SocketProvider({ children }: React.PropsWithChildren) {
-  const [isDead, setIsDead] = useState(false);
+  const [sessionState, setSessionState] = useState<"alive" | "dead" | null>(
+    null,
+  );
 
   useEffect(() => {
-    const sessionID = localStorage.getItem("sessionID");
-
-    if (sessionID) {
-      socket.auth = { sessionID };
-    }
-
+    socket.auth = { sessionId: localStorage.getItem("sessionId") };
     socket.connect();
-
-    function onDisconnect() {
-      console.log("disconnected");
-    }
-
-    socket.on("disconnect", onDisconnect);
-
-    socket.on("session", ({ sessionID }) => {
-      socket.auth = { sessionID };
-      localStorage.setItem("sessionID", sessionID);
-    });
 
     socket.on("connect_error", (error) => {
       if (error.message === "dead") {
-        setIsDead(true);
+        setSessionState("dead");
       }
     });
 
-    socket.on("death", () => {
-      setIsDead(true);
+    socket.on("sessionAlive", (sessionId) => {
+      socket.auth = { sessionId };
+      localStorage.setItem("sessionId", sessionId);
+      setSessionState("alive");
     });
 
-    return () => {
-      socket.off("disconnect", onDisconnect);
-    };
+    socket.on("sessionDead", () => {
+      setSessionState("dead");
+    });
   }, []);
 
   return (
-    <SocketContext.Provider value={{ socket, isDead }}>
+    <SocketContext.Provider value={{ socket, sessionState }}>
       {children}
     </SocketContext.Provider>
   );

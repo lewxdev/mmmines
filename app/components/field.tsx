@@ -13,8 +13,8 @@ const GAP_SIZE = GRID_SIZE * 0.125;
 const PX_PER_REM = 16;
 
 export function Field() {
+  const { sessionState } = useSocket();
   const [plots] = useSocketEvent("update");
-  const { isDead } = useSocket();
   const size = plots ? Math.sqrt(plots.length) : 0;
 
   const parentRef = useRef<HTMLDivElement>(null);
@@ -42,10 +42,10 @@ export function Field() {
     );
   }, [size]);
 
-  return !plots || isDead ? (
+  return !plots || sessionState === "dead" ? (
     <div className="absolute bg-white h-[100dvh] w-[100dvw] z-10">
       <div className="h-full flex items-center justify-center">
-        {isDead ? (
+        {sessionState === "dead" ? (
           <Skull className="h-16 w-16 text-red-600" />
         ) : (
           <div

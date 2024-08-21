@@ -33,6 +33,12 @@ async function main() {
   });
 
   io.on("connection", async (socket) => {
+    if (field.isComplete) {
+      field = await Field.create(field.size + 10);
+      await redis.resetSessions();
+      io.emit("sessionState", "alive");
+    }
+
     await redis.setSession(socket.data.sessionId, "alive");
     socket.emit("session", socket.data.sessionId);
     socket.emit("sessionState", "alive");

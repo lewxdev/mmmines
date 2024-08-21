@@ -60,13 +60,15 @@ export class Field {
     if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
       // set exposed state bit, unset the flagged state bit
       this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);
-      if (!isMine(this.data[index])) {
-        this.exposedCount++;
+      if (isMine(this.data[index])) {
+        return "dead";
       }
+      this.exposedCount++;
       if (getValue(this.data[index]) === 0) {
         getOffsets(this.size, index).forEach(this.exposeCell.bind(this));
       }
     }
+    return "alive";
   }
 
   public flagCell(index: number) {

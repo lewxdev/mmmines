@@ -1,35 +1,56 @@
+import crypto from "crypto";
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
-import type { ClientToServerEvents, ServerToClientEvents } from "@/types";
+import type { SocketServer } from "@/types";
 import { Field } from "@/utils/game";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
 const port = 3000;
+const sessions = new Map<string, "alive" | "dead">();
 
 async function main() {
   const app = next({ dev, hostname, port });
   await app.prepare();
 
   const httpServer = createServer(app.getRequestHandler());
-  const io = new Server<ClientToServerEvents, ServerToClientEvents>(httpServer);
+  const io: SocketServer = new Server(httpServer);
 
   let clientsCount = 0;
 
   let field = await Field.fromRedis();
   field = await field.handleComplete();
 
+  io.use(async (socket, next) => {
+    const { sessionId } = socket.handshake.auth;
+    const sessionState = sessions.get(sessionId);
+    if (sessions.get(sessionId) === "dead") {
+      return next(new Error("dead"));
+    }
+    socket.data.sessionId = sessionState
+      ? sessionId
+      : crypto.randomBytes(8).toString("hex");
+    next();
+  });
+
   io.on("connection", (socket) => {
+    sessions.set(socket.data.sessionId, "alive");
+    socket.emit("sessionAlive", socket.data.sessionId);
+
     clientsCount++;
     io.emit("clientsCount", clientsCount);
     io.emit("exposedPercent", field.exposedPercent);
     socket.emit("update", field.plots);
 
     socket.on("expose", async (index) => {
-      field.exposeCell(index);
-      field = await field.handleComplete();
-      io.emit("exposedPercent", field.exposedPercent);
+      if (field.exposeCell(index) === "dead") {
+        sessions.set(socket.data.sessionId, "dead");
+        socket.emit("sessionDead");
+      } else {
+        field = await field.handleComplete();
+        io.emit("exposedPercent", field.exposedPercent);
+      }
       io.emit("update", field.plots);
     });
 

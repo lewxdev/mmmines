@@ -2,13 +2,13 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import type { SocketClient } from "@/types";
+import type { SessionState, SocketClient } from "@/types";
 
 const socket: SocketClient = io({ autoConnect: false });
 
 type SocketContextValue = {
   socket: SocketClient;
-  sessionState: "alive" | "dead" | null;
+  sessionState: SessionState | null;
 };
 
 const SocketContext = createContext<SocketContextValue | null>(null);
@@ -22,9 +22,7 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }: React.PropsWithChildren) {
-  const [sessionState, setSessionState] = useState<"alive" | "dead" | null>(
-    null,
-  );
+  const [sessionState, setSessionState] = useState<SessionState | null>(null);
 
   useEffect(() => {
     socket.auth = { sessionId: localStorage.getItem("sessionId") };

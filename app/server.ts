@@ -35,7 +35,7 @@ async function main() {
   });
 
   io.on("connection", async (socket) => {
-    await redis.startSession(socket.data.sessionId);
+    await redis.setSession(socket.data.sessionId, "alive");
     socket.emit("sessionAlive", socket.data.sessionId);
 
     clientsCount++;
@@ -45,7 +45,7 @@ async function main() {
 
     socket.on("expose", async (index) => {
       if (field.exposeCell(index) === "dead") {
-        await redis.killSession(socket.data.sessionId);
+        await redis.setSession(socket.data.sessionId, "dead");
         socket.emit("sessionDead");
       } else {
         field = await field.handleComplete();

@@ -1,5 +1,5 @@
 import { Redis } from "ioredis";
-import _ from "lodash";
+import type { SessionState } from "@/types";
 
 const fieldKey = "field:data";
 const sessionKey = "user:sessions";
@@ -20,20 +20,16 @@ export async function encodeData(value: number[]) {
   return value;
 }
 
-export async function getSession(sessionId: string) {
-  const value = await redis.hget(sessionKey, sessionId);
+export async function getSession(id: string): Promise<SessionState | null> {
+  const value = await redis.hget(sessionKey, id);
   return value === "alive" || value === "dead" ? value : null;
 }
 
-export async function startSession(sessionId: string) {
-  return redis.hset(sessionKey, sessionId, "alive");
+export async function setSession(id: string, state: SessionState) {
+  return redis.hset(sessionKey, id, state);
 }
 
-export async function killSession(sessionId: string) {
-  return redis.hset(sessionKey, sessionId, "dead");
-}
-
-export async function reviveSessions() {
+export async function resetSessions() {
   const sessions = await redis.hkeys(sessionKey);
   const args = sessions.flatMap((sessionId) => [sessionId, "alive"]);
   redis.hset(sessionKey, ...args);

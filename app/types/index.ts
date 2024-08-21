@@ -2,6 +2,8 @@ import type { Server } from "socket.io";
 import type { Socket } from "socket.io-client";
 import type { Field } from "@/utils/game";
 
+export type SessionState = "alive" | "dead";
+
 type ClientToServerEvents = {
   expose(index: number): void;
   flag(index: number): void;

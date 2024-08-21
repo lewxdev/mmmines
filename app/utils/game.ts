@@ -1,4 +1,5 @@
 import _ from "lodash";
+import type { SessionState } from "@/types";
 import * as redis from "@/utils/redis";
 
 export type PlotState = number | "mine" | "unknown" | "flagged";
@@ -56,7 +57,7 @@ export class Field {
     }
   }
 
-  public exposeCell(index: number) {
+  public exposeCell(index: number): SessionState {
     if (!_.isNil(this.data[index]) && !isExposed(this.data[index])) {
       // set exposed state bit, unset the flagged state bit
       this.data[index] = (this.data[index] | (1 << 5)) & ~(1 << 4);

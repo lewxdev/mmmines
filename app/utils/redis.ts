@@ -1,5 +1,6 @@
+import crypto from "node:crypto";
 import { Redis } from "ioredis";
-import type { SessionState } from "@/types";
+import type { SessionState, SocketData } from "@/types";
 
 const fieldKey = "field:data";
 const sessionKey = "user:sessions";
@@ -24,10 +25,15 @@ export async function encodeData(value: number[]) {
   return value;
 }
 
-export async function getSession(id: string) {
+export async function getSession(sessionId: string): Promise<SocketData> {
   const redis = getClient();
-  const value = await redis.hget(sessionKey, id);
-  return value === "alive" || value === "dead" ? value : null;
+  const sessionState = await redis.hget(sessionKey, sessionId);
+  if (sessionState === "alive" || sessionState === "dead") {
+    return { sessionId, sessionState };
+  }
+  const newSessionId = (sessionId = crypto.randomBytes(8).toString("hex"));
+  await setSession(newSessionId, "alive");
+  return { sessionId: newSessionId, sessionState: "alive" };
 }
 
 export async function setSession(id: string, state: SessionState) {

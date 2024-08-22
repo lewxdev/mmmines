@@ -2,16 +2,9 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import type { SessionState, SocketClient } from "@/types";
+import type { SocketClient } from "@/types";
 
-const socket: SocketClient = io({ autoConnect: false });
-
-type SocketContextValue = {
-  socket: SocketClient;
-  sessionState: SessionState | null;
-};
-
-const SocketContext = createContext<SocketContextValue | null>(null);
+const SocketContext = createContext<SocketClient | null>(null);
 
 export function useSocket() {
   const socketContext = useContext(SocketContext);
@@ -22,29 +15,26 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }: React.PropsWithChildren) {
-  const [sessionState, setSessionState] = useState<SessionState | null>(null);
+  const [socket] = useState<SocketClient>(() =>
+    io({
+      auth: (callback) => {
+        callback({ sessionId: localStorage.getItem("sessionId") });
+      },
+    }),
+  );
 
   useEffect(() => {
-    socket.auth = { sessionId: localStorage.getItem("sessionId") };
-    socket.connect();
-
-    socket.on("connect_error", (error) => {
-      if (error.message === "dead") {
-        setSessionState("dead");
-      }
-    });
-
     socket.on("session", (sessionId) => {
       socket.auth = { sessionId };
       localStorage.setItem("sessionId", sessionId);
     });
 
-    socket.on("sessionState", setSessionState);
-  }, []);
+    return () => {
+      socket.off();
+    };
+  }, [socket]);
 
   return (
-    <SocketContext.Provider value={{ socket, sessionState }}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 }

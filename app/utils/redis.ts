@@ -31,7 +31,7 @@ export async function getSession(sessionId: string): Promise<SocketData> {
   if (sessionState === "alive" || sessionState === "dead") {
     return { sessionId, sessionState };
   }
-  const newSessionId = (sessionId = crypto.randomBytes(8).toString("hex"));
+  const newSessionId = crypto.randomBytes(8).toString("hex");
   await setSession(newSessionId, "alive");
   return { sessionId: newSessionId, sessionState: "alive" };
 }

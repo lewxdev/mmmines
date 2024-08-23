@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
+import { ThemeProvider } from "@/components/theme-provider";
 import "@/globals.css";
 
 export const metadata: Metadata = {
@@ -13,10 +14,17 @@ export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
     <html lang="en" className={GeistSans.variable}>
       <body className="min-h-screen bg-background font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
-          <SocketProvider>
-            <Header />
-            {props.children}
-          </SocketProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SocketProvider>
+              <Header />
+              {props.children}
+            </SocketProvider>
+          </ThemeProvider>
         </main>
       </body>
     </html>

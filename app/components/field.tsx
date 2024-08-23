@@ -44,10 +44,10 @@ export function Field() {
   }, [size]);
 
   return !plots || sessionState === "dead" ? (
-    <div className="absolute bg-white h-[100dvh] w-[100dvw] z-10">
+    <div className="absolute h-[100dvh] w-[100dvw] z-10 bg-background">
       <div className="h-full flex items-center justify-center">
         {sessionState === "dead" ? (
-          <Skull className="h-16 w-16 text-red-600" />
+          <Skull className="h-16 w-16 text-red-600 dark:text-red-300" />
         ) : (
           <div
             className="grid animate-pulse"
@@ -59,7 +59,7 @@ export function Field() {
             {Array.from({ length: 9 }, (_, index) => (
               <div
                 key={index}
-                className="bg-gray-100"
+                className="bg-gray-100 dark:bg-gray-600"
                 style={{ height: `${GRID_SIZE}rem`, width: `${GRID_SIZE}rem` }}
               />
             ))}
@@ -69,7 +69,7 @@ export function Field() {
     </div>
   ) : (
     <div
-      className="max-w-full select-none overflow-auto bg-white flex-1"
+      className="max-w-full select-none overflow-auto flex-1"
       onContextMenu={(event) => event.preventDefault()}
       ref={parentRef}
     >

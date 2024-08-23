@@ -5,7 +5,6 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Skull } from "lucide-react";
 import { Fade } from "@/components/fade";
 import { Plot } from "@/components/plot";
-import { useSocket } from "@/components/socket-provider";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
 const GRID_SIZE = 2;
@@ -13,7 +12,7 @@ const GAP_SIZE = GRID_SIZE * 0.125;
 const PX_PER_REM = 16;
 
 export function Field() {
-  const { sessionState } = useSocket();
+  const [sessionState] = useSocketEvent("sessionState");
   const [plots] = useSocketEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
 

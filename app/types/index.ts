@@ -19,8 +19,9 @@ export type ServerToClientEvents = {
 
 type InterServerEvents = {};
 
-type SocketData = {
+export type SocketData = {
   sessionId: string;
+  sessionState: SessionState;
 };
 
 export type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>;

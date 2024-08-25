@@ -1,4 +1,3 @@
-import crypto from "crypto";
 import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
@@ -13,48 +12,53 @@ const port = 3000;
 async function main() {
   const app = next({ dev, hostname, port });
   await app.prepare();
-
   const httpServer = createServer(app.getRequestHandler());
   const io: SocketServer = new Server(httpServer);
-
-  let clientsCount = 0;
   let field = await Field.fromRedis();
 
+  // middleware on incoming connection (see: https://socket.io/docs/v4/server-api/#serverusefn)
+  // handles "authentication" and manages *initial* session data
+  // note:
+  // * socket is not connected when this runs
+  // * only executed once per connection
   io.use(async (socket, next) => {
     const { sessionId } = socket.handshake.auth;
-    const sessionState = await redis.getSession(sessionId);
-    if (sessionState === "dead") {
-      return next(new Error("dead"));
-    }
-    socket.data.sessionId = sessionState
-      ? sessionId
-      : crypto.randomBytes(8).toString("hex");
+    socket.data = await redis.getSession(sessionId);
     next();
   });
 
+  // client connects (or reconnects)
   io.on("connection", async (socket) => {
-    if (field.isComplete) {
-      field = await Field.create(field.size + 10);
-      await redis.resetSessions();
-      io.emit("sessionState", "alive");
-    }
+    // update client count for all clients
+    io.emit("clientsCount", io.engine.clientsCount);
 
-    await redis.setSession(socket.data.sessionId, "alive");
+    // send initial data to newly connected client
     socket.emit("session", socket.data.sessionId);
-    socket.emit("sessionState", "alive");
-
-    clientsCount++;
-    io.emit("clientsCount", clientsCount);
-    io.emit("exposedPercent", field.exposedPercent);
+    socket.emit("sessionState", socket.data.sessionState);
+    socket.emit("newSession", socket.data.isNewSession);
     socket.emit("update", field.plots);
+    socket.emit("exposedPercent", field.exposedPercent);
+
+    // middleware on incoming event (see: https://socket.io/docs/v4/server-api/#socketusefn)
+    // handles *subsequent* listeners, blocking events from dead sessions
+    socket.use((event, next) => {
+      if (socket.data.sessionState === "dead") {
+        return next(new Error("dead", { cause: event }));
+      }
+      next();
+    });
+
+    // client event listeners
 
     socket.on("expose", async (index) => {
       if (field.exposeCell(index) === "dead") {
         await redis.setSession(socket.data.sessionId, "dead");
-        socket.emit("sessionState", "dead");
+        // update session state and emit to client
+        socket.emit("sessionState", (socket.data.sessionState = "dead"));
       } else if (field.isComplete) {
         field = await Field.create(field.size + 10);
         await redis.resetSessions();
+        // everyone is alive again 🎉
         io.emit("sessionState", "alive");
       }
       io.emit("exposedPercent", field.exposedPercent);
@@ -66,9 +70,9 @@ async function main() {
       io.emit("update", field.plots);
     });
 
+    // client disconnects
     socket.on("disconnect", () => {
-      clientsCount--;
-      io.emit("clientsCount", clientsCount);
+      io.emit("clientsCount", io.engine.clientsCount);
     });
   });
 

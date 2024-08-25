@@ -2,17 +2,9 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import type { SessionState, SocketClient } from "@/types";
+import type { SocketClient } from "@/types";
 
-const socket: SocketClient = io({ autoConnect: false });
-
-type SocketContextValue = {
-  socket: SocketClient;
-  sessionState: SessionState | null;
-  showTutorial: boolean;
-};
-
-const SocketContext = createContext<SocketContextValue | null>(null);
+const SocketContext = createContext<SocketClient | null>(null);
 
 export function useSocket() {
   const socketContext = useContext(SocketContext);
@@ -23,33 +15,26 @@ export function useSocket() {
 }
 
 export function SocketProvider({ children }: React.PropsWithChildren) {
-  const [sessionState, setSessionState] = useState<SessionState | null>(null);
-  const [showTutorial, setShowTutorial] = useState(true);
+  const [socket] = useState<SocketClient>(() =>
+    io({
+      auth: (callback) => {
+        callback({ sessionId: localStorage.getItem("sessionId") });
+      },
+    }),
+  );
 
   useEffect(() => {
-    if (localStorage.getItem("sessionId")) {
-      socket.auth = { sessionId: localStorage.getItem("sessionId") };
-      setShowTutorial(false);
-    }
-    socket.connect();
-
-    socket.on("connect_error", (error) => {
-      if (error.message === "dead") {
-        setSessionState("dead");
-      }
-    });
-
     socket.on("session", (sessionId) => {
       socket.auth = { sessionId };
       localStorage.setItem("sessionId", sessionId);
     });
 
-    socket.on("sessionState", setSessionState);
-  }, []);
+    return () => {
+      socket.off();
+    };
+  }, [socket]);
 
   return (
-    <SocketContext.Provider value={{ socket, sessionState, showTutorial }}>
-      {children}
-    </SocketContext.Provider>
+    <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>
   );
 }

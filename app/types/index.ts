@@ -15,12 +15,15 @@ export type ServerToClientEvents = {
   exposedPercent(count: number): void;
   session(sessionId: string): void;
   sessionState(state: SessionState): void;
+  newSession(isNewSession: boolean): void;
 };
 
 type InterServerEvents = {};
 
-type SocketData = {
+export type SocketData = {
   sessionId: string;
+  sessionState: SessionState;
+  isNewSession: boolean;
 };
 
 export type SocketClient = Socket<ServerToClientEvents, ClientToServerEvents>;

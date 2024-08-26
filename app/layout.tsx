@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
+import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
 import "@/globals.css";
@@ -10,13 +11,15 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
-    <html lang="en" className={GeistSans.variable}>
-      <body className="min-h-screen bg-background font-sans antialiased">
+    <html lang="en" className={GeistSans.variable} suppressHydrationWarning>
+      <body className="min-h-screen bg-white dark:bg-slate-950 font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
-          <SocketProvider>
-            <Header />
-            {props.children}
-          </SocketProvider>
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+            <SocketProvider>
+              <Header />
+              {props.children}
+            </SocketProvider>
+          </ThemeProvider>
         </main>
       </body>
     </html>

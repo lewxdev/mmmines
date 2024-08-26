@@ -1,7 +1,7 @@
 "use client";
 
 import { Percent, UsersIcon } from "lucide-react";
-import { ModeToggle } from "@/components/mode-toggle";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
 export function Header() {
@@ -23,7 +23,7 @@ export function Header() {
           <Percent className="h-4 w-4" />
         </div>
       </div>
-      <ModeToggle />
+      <ThemeToggle />
     </header>
   );
 }

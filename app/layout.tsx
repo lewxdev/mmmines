@@ -14,12 +14,7 @@ export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
     <html lang="en" className={GeistSans.variable}>
       <body className="min-h-screen bg-white dark:bg-slate-950 font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
+          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SocketProvider>
               <Header />
               {props.children}

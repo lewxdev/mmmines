@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
     <html lang="en" className={GeistSans.variable}>
-      <body className="min-h-screen bg-background font-sans antialiased">
+      <body className="min-h-screen bg-white dark:bg-slate-950 font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
           <ThemeProvider
             attribute="class"

@@ -71,10 +71,12 @@ export function TutorialDialog() {
         <div className="flex flex-col items-center text-center py-4">
           {currentStep.icon}
           <h3 className="text-lg font-semibold mb-2">{currentStep.title}</h3>
-          <p className="text-sm text-gray-600">{currentStep.description}</p>
+          <p className="text-sm text-slate-600 dark:text-slate-300">
+            {currentStep.description}
+          </p>
         </div>
         <DialogFooter>
-          <div className="text-sm text-gray-600 text-center">
+          <div className="text-sm text-slate-600 dark:text-slate-300 text-center">
             Step {step} of {totalSteps}
           </div>
           <div className="space-x-2 flex">

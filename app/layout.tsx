@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
+import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
-import { ThemeProvider } from "@/components/theme-provider";
 import "@/globals.css";
 
 export const metadata: Metadata = {
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
-    <html lang="en" className={GeistSans.variable}>
+    <html lang="en" className={GeistSans.variable} suppressHydrationWarning>
       <body className="min-h-screen bg-white dark:bg-slate-950 font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>

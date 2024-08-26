@@ -52,7 +52,7 @@ export function TutorialDialog() {
   const [step, setStep] = useState(1);
   const [open, setOpen] = useState(true);
   const totalSteps = steps.length;
-  const currentStep = steps[step - 1];
+  const currentStep = steps[step - 1]!;
 
   const handleNext = () => {
     if (step < totalSteps) {
@@ -69,23 +69,25 @@ export function TutorialDialog() {
           <DialogTitle>How to Play</DialogTitle>
         </DialogHeader>
         <div className="flex flex-col items-center text-center py-4">
-          {currentStep?.icon}
-          <h3 className="text-lg font-semibold mb-2">{currentStep?.title}</h3>
-          <p className="text-sm text-muted-foreground">
-            {currentStep?.description}
-          </p>
+          {currentStep.icon}
+          <h3 className="text-lg font-semibold mb-2">{currentStep.title}</h3>
+          <p className="text-sm text-gray-600">{currentStep.description}</p>
         </div>
-        <DialogFooter className="flex justify-between items-center">
-          <div className="text-sm text-muted-foreground">
+        <DialogFooter>
+          <div className="text-sm text-gray-600 text-center">
             Step {step} of {totalSteps}
           </div>
-          <div className="space-x-2">
-            {step > 1 && (
-              <Button variant="outline" onClick={() => setStep(step - 1)}>
-                Previous
-              </Button>
-            )}
-            <Button onClick={handleNext}>
+          <div className="space-x-2 flex">
+            <Button
+              className="flex-1"
+              variant="outline"
+              onClick={
+                step === 1 ? () => setOpen(false) : () => setStep(step - 1)
+              }
+            >
+              {step === 1 ? "Skip" : "Back"}
+            </Button>
+            <Button className="flex-1" onClick={handleNext}>
               {step < totalSteps ? "Next" : "Start Playing"}
             </Button>
           </div>

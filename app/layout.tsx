@@ -10,8 +10,8 @@ export const metadata: Metadata = {
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
-    <html lang="en">
-      <body className={GeistSans.className}>
+    <html lang="en" className={GeistSans.variable}>
+      <body className="min-h-screen bg-background font-sans antialiased">
         <main className="flex flex-col items-center h-[100dvh]">
           <SocketProvider>
             <Header />

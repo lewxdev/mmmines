@@ -5,6 +5,7 @@ import { useVirtualizer } from "@tanstack/react-virtual";
 import { Skull } from "lucide-react";
 import { Fade } from "@/components/fade";
 import { Plot } from "@/components/plot";
+import { TutorialDialog } from "@/components/tutorial-dialog";
 import { useSocketEvent } from "@/hooks/use-socket-event";
 
 const GRID_SIZE = 2;
@@ -13,6 +14,7 @@ const PX_PER_REM = 16;
 
 export function Field() {
   const [sessionState] = useSocketEvent("sessionState");
+  const [isNewSession] = useSocketEvent("newSession");
   const [plots] = useSocketEvent("update");
   const size = plots ? Math.sqrt(plots.length) : 0;
 
@@ -97,6 +99,7 @@ export function Field() {
           }),
         )}
       </div>
+      {isNewSession && <TutorialDialog />}
     </div>
   );
 }

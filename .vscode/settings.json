@@ -7,7 +7,9 @@
   "tailwindCSS.experimental.classRegex": [
     "tw`([^`]*)`",
     "tw\\(\"([^\"]*)\"\\)",
-    "tw\\('([^']*)'\\)"
+    "tw\\('([^']*)'\\)",
+    ["cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*).*?[\"'`]"],
+    ["cn\\(([^)]*)\\)", "(?:'|\"|`)([^']*)(?:'|\"|`)"]
   ],
   "typescript.preferences.importModuleSpecifier": "non-relative",
   "typescript.preferences.preferTypeOnlyAutoImports": true

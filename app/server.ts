@@ -35,6 +35,7 @@ async function main() {
     // send initial data to newly connected client
     socket.emit("session", socket.data.sessionId);
     socket.emit("sessionState", socket.data.sessionState);
+    socket.emit("newSession", socket.data.isNewSession);
     socket.emit("update", field.plots);
     socket.emit("exposedPercent", field.exposedPercent);
 

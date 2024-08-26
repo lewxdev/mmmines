@@ -29,11 +29,11 @@ export async function getSession(sessionId: string): Promise<SocketData> {
   const redis = getClient();
   const sessionState = await redis.hget(sessionKey, sessionId);
   if (sessionState === "alive" || sessionState === "dead") {
-    return { sessionId, sessionState };
+    return { sessionId, sessionState, isNewSession: false };
   }
   const newSessionId = crypto.randomBytes(8).toString("hex");
   await setSession(newSessionId, "alive");
-  return { sessionId: newSessionId, sessionState: "alive" };
+  return { sessionId: newSessionId, sessionState: "alive", isNewSession: true };
 }
 
 export async function setSession(id: string, state: SessionState) {

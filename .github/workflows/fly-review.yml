@@ -1,38 +1,35 @@
-name: Deploy Review App
+# see:
+# * https://fly.io/docs/blueprints/review-apps-guide
+# * https://github.com/superfly/fly-pr-review-apps/blob/1.2.1/README.md
+
+name: Fly Review
 on:
-  # Run this workflow on every PR event. Existing review apps will be updated when the PR is updated.
   pull_request:
     types: [opened, reopened, synchronize, closed]
 
 env:
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
-  # Set these to your Fly.io organization and preferred region.
-  FLY_REGION: ord
   FLY_ORG: mmmines
+  FLY_REGION: ord
 
 jobs:
   review:
     runs-on: ubuntu-latest
     outputs:
       url: ${{ steps.deploy.outputs.url }}
-    # Only run one deployment at a time per PR.
+    # ensure only one deployment runs at a time
     concurrency:
       group: pr-${{ github.event.number }}
-
-    # Deploying apps with this "review" environment allows the URL for the app to be displayed in the PR UI.
-    # Feel free to change the name of this environment.
     environment:
       name: review
-      # The script in the `deploy` sets the URL output for each review app.
       url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - uses: actions/checkout@v4
-
       - id: deploy
         uses: superfly/fly-pr-review-apps@1.2.1
         with:
+          name: pr-${{ github.event.number }}-mmmines
           secrets: |
-            NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}
-            CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}
+            BASE_URL=https://pr-${{ github.event.number }}-mmmines.fly.dev
             REDIS_URL=${{ secrets.REDIS_URL }}

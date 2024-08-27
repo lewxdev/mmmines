@@ -14,7 +14,7 @@
       "src": "icon-maskable.svg",
       "sizes": "any",
       "type": "image/svg+xml",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     },
     {
       "src": "icon-monochrome.svg",

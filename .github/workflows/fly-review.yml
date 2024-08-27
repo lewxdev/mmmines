@@ -31,4 +31,6 @@ jobs:
         uses: lewxdev/fly-pr-review-apps@main
         with:
           build_secrets: BASE_URL=https://${{ env.FLY_APP }}.fly.dev
-          secrets: REDIS_URL=${{ secrets.REDIS_URL }}
+          secrets: |
+            BASE_URL=https://${{ env.FLY_APP }}.fly.dev
+            REDIS_URL=${{ secrets.REDIS_URL }}

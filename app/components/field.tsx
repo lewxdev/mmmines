@@ -39,7 +39,7 @@ export function Field() {
   useEffect(() => {
     document.documentElement.style.setProperty(
       "--field-size",
-      size ? `${size * GRID_SIZE + (size - 1) * GAP_SIZE}rem` : "100%",
+      size ? `${size * GRID_SIZE + (size - 1) * GAP_SIZE + 2}rem` : "100%",
     );
   }, [size]);
 

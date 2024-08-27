@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     title: app.NAME,
     statusBarStyle: "default",
   },
-  metadataBase: new URL(process.env["BASE_URL"]!),
+  metadataBase: app.URL,
   openGraph: {
     title: app.NAME,
     description: app.DESCRIPTION,

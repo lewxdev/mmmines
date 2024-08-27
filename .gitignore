@@ -49,10 +49,10 @@ report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
 .next
 out
 
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
 # serwist
 public/sw*
 public/swe-worker*
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts

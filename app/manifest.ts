@@ -16,7 +16,8 @@ export default function manifest(): MetadataRoute.Manifest {
         src: "icon-maskable.svg",
         sizes: "any",
         type: "image/svg+xml",
-        purpose: "any maskable" as "maskable",
+        // @ts-expect-error: `purpose` only supports individual values
+        purpose: "any maskable",
       },
       {
         src: "icon-monochrome.svg",

@@ -8,9 +8,10 @@ import {
   APP_NAME,
   APP_THEME_COLOR_DARK,
   APP_THEME_COLOR_LIGHT,
-  APP_URL,
 } from "@/utils/const";
 import "@/globals.css";
+
+const APP_URL = new URL(process.env["BASE_URL"]!);
 
 export const metadata: Metadata = {
   title: APP_NAME,

@@ -1,7 +1,6 @@
-export const app = {
-  NAME: "mmmines!",
-  DESCRIPTION: "an endless, massive multiplayer minesweeper game",
-  URL: new URL(process.env["BASE_URL"]!),
-  THEME_COLOR_DARK: "#020617",
-  THEME_COLOR_LIGHT: "#ffffff",
-};
+export const APP_NAME = "mmmines!";
+export const APP_DESCRIPTION =
+  "an endless, massive multiplayer minesweeper game";
+export const APP_URL = new URL(process.env["BASE_URL"]!);
+export const APP_THEME_COLOR_DARK = "#020617";
+export const APP_THEME_COLOR_LIGHT = "#ffffff";

@@ -1,12 +1,12 @@
 import type { MetadataRoute } from "next";
-import { app } from "./utils/const";
+import { APP_NAME, APP_THEME_COLOR_DARK } from "./utils/const";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: app.NAME,
-    short_name: app.NAME,
-    theme_color: app.THEME_COLOR_DARK,
-    background_color: app.THEME_COLOR_DARK,
+    name: APP_NAME,
+    short_name: APP_NAME,
+    theme_color: APP_THEME_COLOR_DARK,
+    background_color: APP_THEME_COLOR_DARK,
     display: "standalone",
     orientation: "any",
     scope: "/",

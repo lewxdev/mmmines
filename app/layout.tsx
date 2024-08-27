@@ -3,12 +3,18 @@ import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
-import { app } from "@/utils/const";
+import {
+  APP_DESCRIPTION,
+  APP_NAME,
+  APP_THEME_COLOR_DARK,
+  APP_THEME_COLOR_LIGHT,
+  APP_URL,
+} from "@/utils/const";
 import "@/globals.css";
 
 export const metadata: Metadata = {
-  title: app.NAME,
-  description: app.DESCRIPTION,
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
   icons: {
     icon: [
       { url: "/icon-light.svg" },
@@ -17,15 +23,15 @@ export const metadata: Metadata = {
   },
   appleWebApp: {
     capable: true,
-    title: app.NAME,
+    title: APP_NAME,
     statusBarStyle: "default",
   },
-  metadataBase: app.URL,
+  metadataBase: APP_URL,
   openGraph: {
-    title: app.NAME,
-    description: app.DESCRIPTION,
-    siteName: app.NAME,
-    url: app.URL,
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    siteName: APP_NAME,
+    url: APP_URL,
     locale: "en_US",
     type: "website",
   },
@@ -33,8 +39,8 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = {
   themeColor: [
-    { color: app.THEME_COLOR_LIGHT, media: "(prefers-color-scheme: light)" },
-    { color: app.THEME_COLOR_DARK, media: "(prefers-color-scheme: dark)" },
+    { color: APP_THEME_COLOR_LIGHT, media: "(prefers-color-scheme: light)" },
+    { color: APP_THEME_COLOR_DARK, media: "(prefers-color-scheme: dark)" },
   ],
 };
 

@@ -8,6 +8,7 @@ on:
     types: [opened, reopened, synchronize, closed]
 
 env:
+  BASE_URL: https://pr-${{ github.event.number }}-mmmines.fly.dev
   FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
   FLY_APP: pr-${{ github.event.number }}-mmmines
   FLY_ORG: mmmines
@@ -29,8 +30,6 @@ jobs:
       - uses: actions/checkout@v4
       - id: deploy
         uses: superfly/fly-pr-review-apps@1.2.1
-        env:
-          BASE_URL: https://${{ env.FLY_APP }}.fly.dev
         with:
           secrets: |
             REDIS_URL=${{ secrets.REDIS_URL }}

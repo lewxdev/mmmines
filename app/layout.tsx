@@ -5,8 +5,27 @@ import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
 import "@/globals.css";
 
+const title = "mmmines!";
+const description = "an endless, massive multiplayer minesweeper game";
+
 export const metadata: Metadata = {
-  title: "mmmines",
+  title,
+  description,
+  icons: {
+    icon: [
+      { url: "/icon-light.svg" },
+      { url: "/icon-dark.svg", media: "(prefers-color-scheme: dark)" },
+    ],
+  },
+  metadataBase: new URL(process.env["BASE_URL"]!),
+  openGraph: {
+    title,
+    description,
+    siteName: title,
+    url: "https://mmmines.fly.dev",
+    locale: "en_US",
+    type: "website",
+  },
 };
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {

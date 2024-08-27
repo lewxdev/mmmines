@@ -1,20 +1,26 @@
-# See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+# see: https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
 
 name: Fly Deploy
 on:
   push:
     branches:
       - main
+
+env:
+  BASE_URL: https://mmmines.fly.dev
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     environment:
       name: production
-      url: https://mmmines.fly.dev
-    concurrency: deploy-group # optional: ensure only one action runs at a time
+      url: ${{ env.BASE_URL }}
+    # ensure only one deployment runs at a time
+    concurrency: deploy-group
+
     steps:
       - uses: actions/checkout@v4
       - uses: superfly/flyctl-actions/setup-flyctl@master
-      - run: flyctl deploy --remote-only
+      - run: flyctl deploy --remote-only --build-secret BASE_URL=${{ env.BASE_URL }}
         env:
           FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

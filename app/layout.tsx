@@ -1,31 +1,48 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
+import {
+  APP_DESCRIPTION,
+  APP_NAME,
+  APP_THEME_COLOR_DARK,
+  APP_THEME_COLOR_LIGHT,
+} from "@/utils/const";
 import "@/globals.css";
 
-const title = "mmmines!";
-const description = "an endless, massive multiplayer minesweeper game";
+const APP_URL = new URL(process.env["BASE_URL"]!);
 
 export const metadata: Metadata = {
-  title,
-  description,
+  title: APP_NAME,
+  description: APP_DESCRIPTION,
   icons: {
     icon: [
       { url: "/icon-light.svg" },
       { url: "/icon-dark.svg", media: "(prefers-color-scheme: dark)" },
     ],
   },
-  metadataBase: new URL(process.env["BASE_URL"]!),
+  appleWebApp: {
+    capable: true,
+    title: APP_NAME,
+    statusBarStyle: "default",
+  },
+  metadataBase: APP_URL,
   openGraph: {
-    title,
-    description,
-    siteName: title,
-    url: "https://mmmines.fly.dev",
+    title: APP_NAME,
+    description: APP_DESCRIPTION,
+    siteName: APP_NAME,
+    url: APP_URL,
     locale: "en_US",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: [
+    { color: APP_THEME_COLOR_LIGHT, media: "(prefers-color-scheme: light)" },
+    { color: APP_THEME_COLOR_DARK, media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {

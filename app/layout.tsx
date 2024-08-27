@@ -3,39 +3,36 @@ import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
 import { SocketProvider } from "@/components/socket-provider";
+import { app } from "@/utils/const";
 import "@/globals.css";
 
-const title = "mmmines!";
-const description = "an endless, massive multiplayer minesweeper game";
-
 export const metadata: Metadata = {
-  title,
-  description,
+  title: app.NAME,
+  description: app.DESCRIPTION,
   icons: {
     icon: [
       { url: "/icon-light.svg" },
       { url: "/icon-dark.svg", media: "(prefers-color-scheme: dark)" },
     ],
   },
-  manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
+    title: app.NAME,
     statusBarStyle: "default",
-    title,
   },
   metadataBase: new URL(process.env["BASE_URL"]!),
   openGraph: {
-    title,
-    description,
-    siteName: title,
-    url: "https://mmmines.fly.dev",
+    title: app.NAME,
+    description: app.DESCRIPTION,
+    siteName: app.NAME,
+    url: app.URL,
     locale: "en_US",
     type: "website",
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: "#020617",
+  themeColor: app.THEME_COLOR,
 };
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {

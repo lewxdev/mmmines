@@ -31,8 +31,8 @@ export const metadata: Metadata = {
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {
   return (
     <html lang="en" className={GeistSans.variable} suppressHydrationWarning>
-      <body className="min-h-screen bg-white dark:bg-slate-950 font-sans antialiased">
-        <main className="flex flex-col items-center h-[100dvh]">
+      <body className="min-h-screen bg-white font-sans antialiased dark:bg-slate-950">
+        <main className="flex h-[100dvh] flex-col items-center">
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <SocketProvider>
               <Header />

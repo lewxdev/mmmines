@@ -20,31 +20,31 @@ const steps = [
     title: "Massive Multiplayer Mines",
     description:
       "Work together in real time to clear the grid and avoid the mines!",
-    icon: <UsersIcon className="w-12 h-12 mb-4 text-primary" />,
+    icon: <UsersIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Understand the Grid",
     description:
       "Minesweeper is played on a grid of squares. Some squares contain mines, while others are safe.",
-    icon: <GridIcon className="w-12 h-12 mb-4 text-primary" />,
+    icon: <GridIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Left-Click to Reveal",
     description:
       "Left-click on a square to reveal what's underneath. If it's a mine, you lose!",
-    icon: <MousePointerClick className="w-12 h-12 mb-4 text-primary" />,
+    icon: <MousePointerClick className="mb-4 h-12 w-12" />,
   },
   {
     title: "Right-Click to Flag",
     description:
       "Right-click to place a flag on a square to keep track of potential mine locations.",
-    icon: <FlagIcon className="w-12 h-12 mb-4 text-primary" />,
+    icon: <FlagIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Hardcore",
     description:
       "Click a mine, and you're out until all squares are revealed and a new game starts with an even larger grid.",
-    icon: <BombIcon className="w-12 h-12 mb-4 text-primary" />,
+    icon: <BombIcon className="mb-4 h-12 w-12" />,
   },
 ];
 
@@ -68,18 +68,18 @@ export function TutorialDialog() {
         <DialogHeader>
           <DialogTitle>How to Play</DialogTitle>
         </DialogHeader>
-        <div className="flex flex-col items-center text-center py-4">
+        <div className="flex flex-col items-center py-4 text-center">
           {currentStep.icon}
-          <h3 className="text-lg font-semibold mb-2">{currentStep.title}</h3>
+          <h3 className="mb-2 text-lg font-semibold">{currentStep.title}</h3>
           <p className="text-sm text-slate-600 dark:text-slate-300">
             {currentStep.description}
           </p>
         </div>
         <DialogFooter>
-          <div className="text-sm text-slate-600 dark:text-slate-300 text-center">
+          <div className="text-center text-sm text-slate-600 dark:text-slate-300">
             Step {step} of {totalSteps}
           </div>
-          <div className="space-x-2 flex">
+          <div className="flex space-x-2">
             <Button
               className="flex-1"
               variant="outline"

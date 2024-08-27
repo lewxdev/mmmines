@@ -81,10 +81,5 @@
     "tailwindFunctions": [
       "tw"
     ]
-  },
-  "dockerfile": {
-    "secrets": [
-      "BASE_URL"
-    ]
   }
 }

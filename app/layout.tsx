@@ -7,7 +7,6 @@ import "@/globals.css";
 
 const title = "mmmines!";
 const description = "an endless, massive multiplayer minesweeper game";
-const baseUrl = process.env["BASE_URL"];
 
 export const metadata: Metadata = {
   title,
@@ -18,7 +17,7 @@ export const metadata: Metadata = {
       { url: "/icon-dark.svg", media: "(prefers-color-scheme: dark)" },
     ],
   },
-  metadataBase: baseUrl ? new URL(baseUrl) : null,
+  metadataBase: new URL(process.env["BASE_URL"]!),
   openGraph: {
     title,
     description,

@@ -12,7 +12,6 @@ WORKDIR /app
 # Set production environment
 ENV NODE_ENV="production"
 
-
 # Throw-away build stage to reduce size of final image
 FROM base as build
 
@@ -28,11 +27,12 @@ RUN npm ci --include=dev
 COPY --link . .
 
 # Build application
-RUN npm run build
+RUN --mount=type=secret,id=BASE_URL \
+    BASE_URL="$(cat /run/secrets/BASE_URL)" \
+    npm run build
 
 # Remove development dependencies
 RUN npm prune --omit=dev
-
 
 # Final stage for app image
 FROM base

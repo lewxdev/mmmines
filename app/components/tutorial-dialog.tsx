@@ -20,31 +20,31 @@ const steps = [
     title: "Massive Multiplayer Mines",
     description:
       "Work together in real time to clear the grid and avoid the mines!",
-    icon: <UsersIcon className="text-primary mb-4 h-12 w-12" />,
+    icon: <UsersIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Understand the Grid",
     description:
       "Minesweeper is played on a grid of squares. Some squares contain mines, while others are safe.",
-    icon: <GridIcon className="text-primary mb-4 h-12 w-12" />,
+    icon: <GridIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Left-Click to Reveal",
     description:
       "Left-click on a square to reveal what's underneath. If it's a mine, you lose!",
-    icon: <MousePointerClick className="text-primary mb-4 h-12 w-12" />,
+    icon: <MousePointerClick className="mb-4 h-12 w-12" />,
   },
   {
     title: "Right-Click to Flag",
     description:
       "Right-click to place a flag on a square to keep track of potential mine locations.",
-    icon: <FlagIcon className="text-primary mb-4 h-12 w-12" />,
+    icon: <FlagIcon className="mb-4 h-12 w-12" />,
   },
   {
     title: "Hardcore",
     description:
       "Click a mine, and you're out until all squares are revealed and a new game starts with an even larger grid.",
-    icon: <BombIcon className="text-primary mb-4 h-12 w-12" />,
+    icon: <BombIcon className="mb-4 h-12 w-12" />,
   },
 ];
 

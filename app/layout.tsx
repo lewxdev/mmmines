@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
 import { Header } from "@/components/header";
@@ -17,6 +17,12 @@ export const metadata: Metadata = {
       { url: "/icon-dark.svg", media: "(prefers-color-scheme: dark)" },
     ],
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title,
+  },
   metadataBase: new URL(process.env["BASE_URL"]!),
   openGraph: {
     title,
@@ -26,6 +32,10 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#020617",
 };
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {

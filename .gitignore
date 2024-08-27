@@ -52,3 +52,7 @@ out
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# serwist
+public/sw*
+public/swe-worker*

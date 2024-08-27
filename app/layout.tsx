@@ -32,7 +32,10 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: app.THEME_COLOR,
+  themeColor: [
+    { color: app.THEME_COLOR_LIGHT, media: "(prefers-color-scheme: light)" },
+    { color: app.THEME_COLOR_DARK, media: "(prefers-color-scheme: dark)" },
+  ],
 };
 
 export default function RootLayout(props: Readonly<React.PropsWithChildren>) {

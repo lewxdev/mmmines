@@ -12,7 +12,7 @@ export function Header() {
     <header className="w-[min(var(--field-size),100%)] px-4 py-1 flex justify-between">
       <div className="flex flex-row gap-6">
         <h1 className="text-4xl font-extrabold uppercase italic pr-4">
-          mmmines
+          mmmines!
         </h1>
         <div className="flex items-center gap-2">
           <span>{clientsCount ?? "⋯"}</span>

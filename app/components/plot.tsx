@@ -49,10 +49,10 @@ const classMap = new Map<PlotState, string>([
   [6, tw`text-slate-800 dark:text-slate-200`],
   [7, tw`text-slate-900 dark:text-slate-100`],
   [8, tw`text-slate-950 dark:text-slate-50`],
-  ["mine", tw`bg-red-500 dark:bg-red-400 text-slate-800 dark:text-slate-950`],
+  ["mine", tw`bg-red-500 text-slate-800 dark:bg-red-400 dark:text-slate-950`],
   [
     "flagged",
-    tw`bg-slate-100 dark:bg-slate-600 text-yellow-400 dark:text-yellow-300`,
+    tw`bg-slate-100 text-yellow-400 dark:bg-slate-600 dark:text-yellow-300`,
   ],
   ["unknown", tw`bg-slate-100 dark:bg-slate-600`],
 ]);

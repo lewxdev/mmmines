@@ -44,8 +44,8 @@ export function Field() {
   }, [size]);
 
   return !plots || sessionState === "dead" ? (
-    <div className="absolute h-[100dvh] w-[100dvw] z-10 bg-white dark:bg-slate-950">
-      <div className="h-full flex items-center justify-center">
+    <div className="absolute z-10 h-[100dvh] w-[100dvw] bg-white dark:bg-slate-950">
+      <div className="flex h-full items-center justify-center">
         {sessionState === "dead" ? (
           <Skull className="h-16 w-16 text-red-600 dark:text-red-300" />
         ) : (
@@ -69,7 +69,7 @@ export function Field() {
     </div>
   ) : (
     <div
-      className="max-w-full select-none overflow-auto flex-1"
+      className="max-w-full flex-1 select-none overflow-auto"
       onContextMenu={(event) => event.preventDefault()}
       ref={parentRef}
     >

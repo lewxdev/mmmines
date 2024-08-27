@@ -28,7 +28,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deploy
-        uses: JargeZ/fly-pr-review-apps@unsafe-name
+        uses: JargeZ/fly-pr-review-apps@4d6566e85d6b9320a781fb4fe42f1f8c31dc5c8e
         with:
           name: ${{ env.FLY_APP }}
           build_secrets: BASE_URL=https://${{ env.FLY_APP }}.fly.dev

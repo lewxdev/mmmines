@@ -64,7 +64,7 @@ export function TutorialDialog() {
 
   return (
     <Dialog open={open} onOpenChange={setOpen} defaultOpen>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>How to Play</DialogTitle>
         </DialogHeader>

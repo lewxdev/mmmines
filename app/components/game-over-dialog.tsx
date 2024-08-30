@@ -17,13 +17,12 @@ export function GameOverDialog() {
   const inputRef = useRef<HTMLInputElement>(null);
   const shareLink = "https://mmmines.fly.dev/";
 
-  const copyToClipboard = () => {
+  const copyToClipboard = async () => {
     if (inputRef.current) {
       inputRef.current.select();
-      navigator.clipboard.writeText(shareLink).then(() => {
-        setIsCopied(true);
-        setTimeout(() => setIsCopied(false), 2000);
-      });
+      await navigator.clipboard.writeText(shareLink);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000);
     }
   };
 

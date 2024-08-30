@@ -48,7 +48,6 @@ export function GameOverDialog() {
               readOnly
               value={shareLink}
               className="flex-grow"
-              aria-label="Share link"
             />
             <Button onClick={copyToClipboard} className="w-24">
               {isCopied ? (

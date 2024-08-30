@@ -30,7 +30,7 @@ export class Field {
   }
 
   public get isComplete() {
-    return this.data.every((byte) => isExposed(byte) || isMine(byte));
+    return this.exposedPercent === 100;
   }
 
   public static async create(size = 10) {
@@ -55,7 +55,8 @@ export class Field {
         (count, byte) => (isExposed(byte) && !isMine(byte) ? count + 1 : count),
         0,
       );
-      return new Field(size, mineCount, data, exposedCount);
+      const field = new Field(size, mineCount, data, exposedCount);
+      return field.isComplete ? Field.create(size + 10) : field;
     } catch {
       return Field.create();
     }

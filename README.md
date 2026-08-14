@@ -5,7 +5,7 @@ and Redis.
 
 ## run locally
 
-requires Node.js 20, npm, and either Redis or Docker.
+requires Node.js 24, npm, and either Redis or Docker.
 
 ```sh
 npm ci

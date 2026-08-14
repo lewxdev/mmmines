@@ -46,19 +46,22 @@ export class Field {
     return new Field(size, mineCount, data);
   }
 
-  public static async fromRedis() {
+  public static async fromRedis(forcedSize?: number) {
     try {
       const data = await redis.decodeData();
       const size = Math.sqrt(data.length);
+      if (forcedSize !== undefined && size !== forcedSize) {
+        return Field.create(forcedSize);
+      }
       const mineCount = _.sum(data.map(isMine));
       const exposedCount = data.reduce(
         (count, byte) => (isExposed(byte) && !isMine(byte) ? count + 1 : count),
         0,
       );
       const field = new Field(size, mineCount, data, exposedCount);
-      return field.isComplete ? Field.create(size + 10) : field;
+      return field.isComplete ? Field.create(forcedSize ?? size + 10) : field;
     } catch {
-      return Field.create();
+      return Field.create(forcedSize);
     }
   }
 

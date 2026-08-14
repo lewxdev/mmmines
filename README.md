@@ -5,7 +5,7 @@ and Redis.
 
 ## run locally
 
-requires Node.js 20, npm, and Redis.
+requires Node.js 20, npm, and either Redis or Docker.
 
 ```sh
 npm ci
@@ -18,10 +18,16 @@ replace `REDIS_URL` in `.env.local` with:
 REDIS_URL=redis://localhost:6379
 ```
 
-start Redis:
+start Redis directly:
 
 ```sh
 redis-server --save '' --appendonly no
+```
+
+or with Docker:
+
+```sh
+docker run --rm -p 6379:6379 redis:7-alpine
 ```
 
 in another terminal, start the app:

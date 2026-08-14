@@ -1,5 +1,6 @@
 "use client";
 
+/* eslint-disable react-hooks/incompatible-library -- TanStack Virtual cannot be memoized safely */
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Fade } from "@/components/fade";

@@ -1,6 +1,6 @@
 # see:
 # * https://fly.io/docs/blueprints/review-apps-guide
-# * https://github.com/superfly/fly-pr-review-apps/blob/1.2.1/README.md
+# * https://github.com/superfly/fly-pr-review-apps/blob/1.6.0/README.md
 
 name: Fly Review
 on:
@@ -28,8 +28,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - id: deploy
-        uses: lewxdev/fly-pr-review-apps@main
+        uses: superfly/fly-pr-review-apps@1.6.0
         with:
+          name: ${{ env.FLY_APP }}
           build_secrets: BASE_URL=https://${{ env.FLY_APP }}.fly.dev
           secrets: |
             BASE_URL=https://${{ env.FLY_APP }}.fly.dev

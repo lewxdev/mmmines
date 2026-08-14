@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useTheme } from "next-themes";
 import type { PlotState } from "@/utils/game";
 
 type Props = {
@@ -50,7 +51,8 @@ const palettes = {
 export function Minimap({ plots, scrollRef }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [viewport, setViewport] = useState(EMPTY_VIEWPORT);
-  const [isDark, setIsDark] = useState(false);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
   const size = Math.sqrt(plots.length);
   const isScrollable =
     viewport.scrollWidth > viewport.clientWidth + 1 ||
@@ -91,15 +93,6 @@ export function Minimap({ plots, scrollRef }: Props) {
       scrollElement.removeEventListener("scroll", updateViewport);
     };
   }, [plots.length, scrollRef]);
-
-  useEffect(() => {
-    const root = document.documentElement;
-    const updateTheme = () => setIsDark(root.classList.contains("dark"));
-    const observer = new MutationObserver(updateTheme);
-    observer.observe(root, { attributeFilter: ["class"], attributes: true });
-    updateTheme();
-    return () => observer.disconnect();
-  }, []);
 
   useEffect(() => {
     const canvas = canvasRef.current;

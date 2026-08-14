@@ -18,6 +18,12 @@ type Viewport = {
   scrollWidth: number;
 };
 
+type CanvasSize = {
+  height: number;
+  pixelRatio: number;
+  width: number;
+};
+
 const EMPTY_VIEWPORT: Viewport = {
   clientHeight: 0,
   clientWidth: 0,
@@ -27,6 +33,12 @@ const EMPTY_VIEWPORT: Viewport = {
   scrollWidth: 0,
 };
 
+const EMPTY_CANVAS_SIZE: CanvasSize = {
+  height: 0,
+  pixelRatio: 1,
+  width: 0,
+};
+
 const palettes = {
   dark: {
     background: "#020617",
@@ -34,8 +46,6 @@ const palettes = {
     mine: "#f87171",
     numbered: "#94a3b8",
     unknown: "#475569",
-    viewport: "#f8fafc",
-    viewportFill: "rgba(248, 250, 252, 0.08)",
   },
   light: {
     background: "#ffffff",
@@ -43,13 +53,12 @@ const palettes = {
     mine: "#ef4444",
     numbered: "#64748b",
     unknown: "#e2e8f0",
-    viewport: "#0f172a",
-    viewportFill: "rgba(15, 23, 42, 0.06)",
   },
 };
 
 export function Minimap({ plots, scrollRef }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [canvasSize, setCanvasSize] = useState(EMPTY_CANVAS_SIZE);
   const [viewport, setViewport] = useState(EMPTY_VIEWPORT);
   const { resolvedTheme } = useTheme();
   const isDark = resolvedTheme === "dark";
@@ -96,23 +105,59 @@ export function Minimap({ plots, scrollRef }: Props) {
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas || !isScrollable || !Number.isInteger(size)) return;
+    if (!canvas || !isScrollable) return;
 
-    const bounds = canvas.getBoundingClientRect();
-    const pixelRatio = window.devicePixelRatio || 1;
-    canvas.width = Math.round(bounds.width * pixelRatio);
-    canvas.height = Math.round(bounds.height * pixelRatio);
+    const updateCanvasSize = () => {
+      const bounds = canvas.getBoundingClientRect();
+      const nextSize = {
+        height: bounds.height,
+        pixelRatio: window.devicePixelRatio || 1,
+        width: bounds.width,
+      };
+      setCanvasSize((currentSize) =>
+        currentSize.height === nextSize.height &&
+        currentSize.pixelRatio === nextSize.pixelRatio &&
+        currentSize.width === nextSize.width
+          ? currentSize
+          : nextSize,
+      );
+    };
+
+    const resizeObserver = new ResizeObserver(updateCanvasSize);
+    resizeObserver.observe(canvas);
+    window.addEventListener("resize", updateCanvasSize);
+    updateCanvasSize();
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateCanvasSize);
+    };
+  }, [isScrollable]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (
+      !canvas ||
+      !canvasSize.height ||
+      !canvasSize.width ||
+      !Number.isInteger(size)
+    ) {
+      return;
+    }
+
+    canvas.width = Math.round(canvasSize.width * canvasSize.pixelRatio);
+    canvas.height = Math.round(canvasSize.height * canvasSize.pixelRatio);
 
     const context = canvas.getContext("2d");
     if (!context) return;
-    context.scale(pixelRatio, pixelRatio);
+    context.scale(canvasSize.pixelRatio, canvasSize.pixelRatio);
 
     const palette = isDark ? palettes.dark : palettes.light;
     context.fillStyle = palette.background;
-    context.fillRect(0, 0, bounds.width, bounds.height);
+    context.fillRect(0, 0, canvasSize.width, canvasSize.height);
 
-    const cellWidth = bounds.width / size;
-    const cellHeight = bounds.height / size;
+    const cellWidth = canvasSize.width / size;
+    const cellHeight = canvasSize.height / size;
     const inset = Math.min(0.5, cellWidth * 0.08, cellHeight * 0.08);
 
     plots.forEach((state, index) => {
@@ -132,27 +177,7 @@ export function Minimap({ plots, scrollRef }: Props) {
       );
     });
     context.globalAlpha = 1;
-
-    const viewportX =
-      (viewport.scrollLeft / viewport.scrollWidth) * bounds.width;
-    const viewportY =
-      (viewport.scrollTop / viewport.scrollHeight) * bounds.height;
-    const viewportWidth =
-      (viewport.clientWidth / viewport.scrollWidth) * bounds.width;
-    const viewportHeight =
-      (viewport.clientHeight / viewport.scrollHeight) * bounds.height;
-
-    context.fillStyle = palette.viewportFill;
-    context.fillRect(viewportX, viewportY, viewportWidth, viewportHeight);
-    context.strokeStyle = palette.viewport;
-    context.lineWidth = 1.5;
-    context.strokeRect(
-      viewportX + 0.75,
-      viewportY + 0.75,
-      Math.max(0, viewportWidth - 1.5),
-      Math.max(0, viewportHeight - 1.5),
-    );
-  }, [isDark, isScrollable, plots, size, viewport]);
+  }, [canvasSize, isDark, isScrollable, plots, size]);
 
   const navigateToPointer = useCallback(
     (clientX: number, clientY: number) => {
@@ -172,6 +197,13 @@ export function Minimap({ plots, scrollRef }: Props) {
   );
 
   if (!isScrollable) return null;
+
+  const viewportStyle = {
+    height: `${(viewport.clientHeight / viewport.scrollHeight) * 100}%`,
+    left: `${(viewport.scrollLeft / viewport.scrollWidth) * 100}%`,
+    top: `${(viewport.scrollTop / viewport.scrollHeight) * 100}%`,
+    width: `${(viewport.clientWidth / viewport.scrollWidth) * 100}%`,
+  };
 
   return (
     <button
@@ -209,7 +241,17 @@ export function Minimap({ plots, scrollRef }: Props) {
       }}
       type="button"
     >
-      <canvas className="block h-full w-full" ref={canvasRef} />
+      <span className="relative block h-full w-full">
+        <canvas
+          className="absolute inset-0 block h-full w-full"
+          ref={canvasRef}
+        />
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute box-border border-[1.5px] border-slate-900 bg-slate-900/5 dark:border-slate-50 dark:bg-slate-50/10"
+          style={viewportStyle}
+        />
+      </span>
     </button>
   );
 }

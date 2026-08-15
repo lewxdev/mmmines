@@ -1,6 +1,9 @@
 {
   "extends": ["@tsconfig/next", "@tsconfig/strictest"],
   "compilerOptions": {
+    "allowImportingTsExtensions": true,
+    "erasableSyntaxOnly": true,
+    "verbatimModuleSyntax": true,
     "baseUrl": ".",
     "paths": {
       "@/*": ["./app/*"]

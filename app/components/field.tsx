@@ -3,12 +3,12 @@
 /* eslint-disable react-hooks/incompatible-library -- TanStack Virtual cannot be memoized safely */
 import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { Fade } from "@/components/fade";
-import { GameOverDialog } from "@/components/game-over-dialog";
-import { Minimap } from "@/components/minimap";
-import { Plot } from "@/components/plot";
-import { TutorialDialog } from "@/components/tutorial-dialog";
-import { useSocketEvent } from "@/hooks/use-socket-event";
+import { Fade } from "#app/components/fade.tsx";
+import { GameOverDialog } from "#app/components/game-over-dialog.tsx";
+import { Minimap } from "#app/components/minimap.tsx";
+import { Plot } from "#app/components/plot.tsx";
+import { TutorialDialog } from "#app/components/tutorial-dialog.tsx";
+import { useSocketEvent } from "#app/hooks/use-socket-event.ts";
 
 const GRID_SIZE = 2;
 const GAP_SIZE = GRID_SIZE * 0.125;

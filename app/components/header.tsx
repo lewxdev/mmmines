@@ -1,9 +1,9 @@
 "use client";
 
 import { Percent, UsersIcon } from "lucide-react";
-import { ThemeToggle } from "@/components/theme-toggle";
-import { useSocketEvent } from "@/hooks/use-socket-event";
-import { APP_NAME } from "@/utils/const";
+import { ThemeToggle } from "#app/components/theme-toggle.tsx";
+import { useSocketEvent } from "#app/hooks/use-socket-event.ts";
+import { APP_NAME } from "#app/utils/const.ts";
 
 export function Header() {
   const [clientsCount] = useSocketEvent("clientsCount");

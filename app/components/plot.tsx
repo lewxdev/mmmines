@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 import clsx from "clsx/lite";
-import { useSocket } from "@/components/socket-provider";
-import { useLongPress } from "@/hooks/use-long-press";
-import { tw } from "@/utils";
-import type { PlotState } from "@/utils/game";
+import { useSocket } from "#app/components/socket-provider.tsx";
+import { useLongPress } from "#app/hooks/use-long-press.ts";
+import type { PlotState } from "#app/utils/game.ts";
+import { tw } from "#app/utils/index.ts";
 
 type Props = React.HTMLAttributes<HTMLDivElement> & {
   index: number;

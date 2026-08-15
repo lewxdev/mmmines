@@ -1,6 +1,6 @@
 import crypto from "node:crypto";
 import { Redis } from "ioredis";
-import type { SessionState, SocketData } from "@/types";
+import type { SessionState, SocketData } from "#app/types/index.ts";
 
 const fieldKey = "field:data";
 const sessionKey = "user:sessions";

@@ -1,15 +1,15 @@
 import type { Metadata, Viewport } from "next";
 import { GeistSans } from "geist/font/sans";
 import { ThemeProvider } from "next-themes";
-import { Header } from "@/components/header";
-import { SocketProvider } from "@/components/socket-provider";
+import { Header } from "#app/components/header.tsx";
+import { SocketProvider } from "#app/components/socket-provider.tsx";
 import {
   APP_DESCRIPTION,
   APP_NAME,
   APP_THEME_COLOR_DARK,
   APP_THEME_COLOR_LIGHT,
-} from "@/utils/const";
-import "@/globals.css";
+} from "#app/utils/const.ts";
+import "#app/globals.css";
 
 const APP_URL = new URL(process.env["BASE_URL"]!);
 

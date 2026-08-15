@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useTheme } from "next-themes";
-import type { PlotState } from "@/utils/game";
+import type { PlotState } from "#app/utils/game.ts";
 
 type Props = {
   plots: PlotState[];

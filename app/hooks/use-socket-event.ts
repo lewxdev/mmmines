@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useSocket } from "@/components/socket-provider";
-import type { ServerToClientEvents } from "@/types";
+import { useSocket } from "#app/components/socket-provider.tsx";
+import type { ServerToClientEvents } from "#app/types/index.ts";
 
 export function useSocketEvent<K extends keyof ServerToClientEvents>(event: K) {
   const socket = useSocket();

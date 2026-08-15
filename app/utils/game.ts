@@ -1,6 +1,6 @@
 import _ from "lodash";
-import type { SessionState } from "@/types";
-import * as redis from "./redis.ts";
+import type { SessionState } from "#app/types/index.ts";
+import * as redis from "#app/utils/redis.ts";
 
 export type PlotState = number | "mine" | "unknown" | "flagged";
 

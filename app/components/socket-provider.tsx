@@ -2,7 +2,7 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import type { SocketClient } from "@/types";
+import type { SocketClient } from "#app/types/index.ts";
 
 const SocketContext = createContext<SocketClient | null>(null);
 

@@ -2,6 +2,9 @@
   "name": "mmmines",
   "private": true,
   "type": "module",
+  "imports": {
+    "#app/*": "./app/*"
+  },
   "devEngines": {
     "runtime": {
       "name": "node",
@@ -71,7 +74,7 @@
       "^react$",
       "^next$",
       "<THIRD_PARTY_MODULES>",
-      "^@/.*$",
+      "^#app/.*$",
       "^[.]"
     ],
     "importOrderTypeScriptVersion": "5.0.0",

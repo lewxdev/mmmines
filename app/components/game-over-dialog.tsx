@@ -2,14 +2,14 @@
 
 import { useRef, useState } from "react";
 import { CheckIcon, CopyIcon, Skull } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "#app/components/ui/button.tsx";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
+} from "#app/components/ui/dialog.tsx";
+import { Input } from "#app/components/ui/input.tsx";
 
 export function GameOverDialog() {
   const [isOpen, setIsOpen] = useState(true);

@@ -1,6 +1,6 @@
 import type { Server } from "socket.io";
 import type { Socket } from "socket.io-client";
-import type { Field } from "@/utils/game";
+import type { Field } from "#app/utils/game.ts";
 
 export type SessionState = "alive" | "dead";
 

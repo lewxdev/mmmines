@@ -6,7 +6,7 @@ import { Field } from "@/utils/game";
 import * as redis from "@/utils/redis";
 
 const dev = process.env.NODE_ENV !== "production";
-const hostname = "localhost";
+const hostname = "0.0.0.0";
 const port = 3000;
 
 async function main() {
@@ -77,7 +77,7 @@ async function main() {
     });
   });
 
-  httpServer.once("error", onError).listen(port, () => {
+  httpServer.once("error", onError).listen(port, hostname, () => {
     console.log(`> Ready on http://${hostname}:${port}`);
   });
 }

@@ -6,7 +6,7 @@ import type { PlotState } from "@/utils/game";
 
 type Props = {
   plots: PlotState[];
-  scrollRef: React.RefObject<HTMLDivElement>;
+  scrollRef: React.RefObject<HTMLDivElement | null>;
 };
 
 type Viewport = {

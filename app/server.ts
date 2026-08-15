@@ -12,9 +12,10 @@ const port = 3000;
 async function main() {
   const app = next({ dev, hostname, port });
   await app.prepare();
+  const devFieldSize = getDevFieldSize();
   const httpServer = createServer(app.getRequestHandler());
   const io: SocketServer = new Server(httpServer);
-  let field = await Field.fromRedis();
+  let field = await Field.fromRedis(devFieldSize);
 
   // middleware on incoming connection (see: https://socket.io/docs/v4/server-api/#serverusefn)
   // handles "authentication" and manages *initial* session data
@@ -56,7 +57,7 @@ async function main() {
         // update session state and emit to client
         socket.emit("sessionState", (socket.data.sessionState = "dead"));
       } else if (field.isComplete) {
-        field = await Field.create(field.size + 10);
+        field = await Field.create(devFieldSize ?? field.size + 10);
         await redis.resetSessions();
         // everyone is alive again 🎉
         io.emit("sessionState", "alive");
@@ -79,6 +80,19 @@ async function main() {
   httpServer.once("error", onError).listen(port, () => {
     console.log(`> Ready on http://${hostname}:${port}`);
   });
+}
+
+function getDevFieldSize() {
+  const value = process.env["DEV_FIELD_SIZE"];
+  if (!dev || value === undefined || value.trim() === "") {
+    return undefined;
+  }
+
+  const size = Number(value);
+  if (!Number.isSafeInteger(size) || size < 1) {
+    throw new Error("DEV_FIELD_SIZE must be a positive integer");
+  }
+  return size;
 }
 
 main().catch(onError);

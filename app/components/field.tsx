@@ -4,6 +4,7 @@ import { useEffect, useRef } from "react";
 import { useVirtualizer } from "@tanstack/react-virtual";
 import { Fade } from "@/components/fade";
 import { GameOverDialog } from "@/components/game-over-dialog";
+import { Minimap } from "@/components/minimap";
 import { Plot } from "@/components/plot";
 import { TutorialDialog } from "@/components/tutorial-dialog";
 import { useSocketEvent } from "@/hooks/use-socket-event";
@@ -64,37 +65,40 @@ export function Field() {
       </div>
     </div>
   ) : (
-    <div
-      className="max-w-full flex-1 select-none overflow-auto"
-      onContextMenu={(event) => event.preventDefault()}
-      ref={parentRef}
-    >
+    <div className="relative min-h-0 w-[min(var(--field-size),100%)] flex-1">
       <div
-        className="relative"
-        style={{
-          height: rowVirtualizer.getTotalSize(),
-          width: columnVirtualizer.getTotalSize(),
-        }}
+        className="h-full max-w-full select-none overflow-auto"
+        onContextMenu={(event) => event.preventDefault()}
+        ref={parentRef}
       >
-        {rowVirtualizer.getVirtualItems().flatMap((virtualRow) =>
-          columnVirtualizer.getVirtualItems().map((virtualColumn) => {
-            const { index: y, size: height, start: top } = virtualRow;
-            const { index: x, size: width, start: left } = virtualColumn;
-            const index = y * size + x;
-            return (
-              // todo: add room/mode to key
-              <Fade key={`${size}:${index}`}>
-                <Plot
-                  className="absolute"
-                  index={index}
-                  state={plots[index]!}
-                  style={{ height, width, top, left }}
-                />
-              </Fade>
-            );
-          }),
-        )}
+        <div
+          className="relative"
+          style={{
+            height: rowVirtualizer.getTotalSize(),
+            width: columnVirtualizer.getTotalSize(),
+          }}
+        >
+          {rowVirtualizer.getVirtualItems().flatMap((virtualRow) =>
+            columnVirtualizer.getVirtualItems().map((virtualColumn) => {
+              const { index: y, size: height, start: top } = virtualRow;
+              const { index: x, size: width, start: left } = virtualColumn;
+              const index = y * size + x;
+              return (
+                // todo: add room/mode to key
+                <Fade key={`${size}:${index}`}>
+                  <Plot
+                    className="absolute"
+                    index={index}
+                    state={plots[index]!}
+                    style={{ height, width, top, left }}
+                  />
+                </Fade>
+              );
+            }),
+          )}
+        </div>
       </div>
+      <Minimap plots={plots} scrollRef={parentRef} />
       {sessionState === "dead" && <GameOverDialog />}
       {isNewSession && <TutorialDialog />}
     </div>

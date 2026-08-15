@@ -10,7 +10,7 @@ const hostname = "localhost";
 const port = 3000;
 
 async function main() {
-  const app = next({ dev, hostname, port });
+  const app = next({ dev, hostname, port, webpack: true });
   await app.prepare();
   const devFieldSize = getDevFieldSize();
   const httpServer = createServer(app.getRequestHandler());

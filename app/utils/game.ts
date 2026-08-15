@@ -1,17 +1,26 @@
 import _ from "lodash";
 import type { SessionState } from "@/types";
-import * as redis from "@/utils/redis";
+import * as redis from "./redis.ts";
 
 export type PlotState = number | "mine" | "unknown" | "flagged";
 
 export class Field {
+  public readonly size: number;
+  public readonly mineCount: number;
+  private readonly data: number[];
+  private exposedCount: number;
+  public readonly plots: PlotState[];
+
   private constructor(
-    public readonly size: number,
-    public readonly mineCount: number,
-    private readonly data: number[],
-    private exposedCount = 0,
-    public readonly plots: PlotState[] = data.map(getState),
+    size: number,
+    mineCount: number,
+    data: number[],
+    exposedCount = 0,
   ) {
+    this.size = size;
+    this.mineCount = mineCount;
+    this.exposedCount = exposedCount;
+    this.plots = data.map(getState);
     const debouncedEncodeData = _.debounce(redis.encodeData, 1000);
     this.data = new Proxy(data, {
       set: (target, prop, value) => {

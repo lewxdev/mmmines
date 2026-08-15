@@ -2,8 +2,8 @@ import { createServer } from "node:http";
 import next from "next";
 import { Server } from "socket.io";
 import type { SocketServer } from "@/types";
-import { Field } from "@/utils/game";
-import * as redis from "@/utils/redis";
+import { Field } from "../app/utils/game.ts";
+import * as redis from "../app/utils/redis.ts";
 
 const dev = process.env.NODE_ENV !== "production";
 const hostname = "localhost";
